@@ -1,0 +1,14 @@
+Goal: Create a browser extension that can read NfcA cards from an external USB connected reader.
+Architecture: Background host app is a Java console app that is self contained and can run on any operating system (MacOS, Windows, Unix).
+Resposibilities:
+ - Java app has several commands:
+  - Read connected readers
+  - Listen on one of the connected readers that the read command detects and read the different types of UID of the nfc cards/tags
+ - Browser extension:
+  - Uses the CLI Java app to provide a configuration popup to select the available readers (by default select the first)
+  - Can send listen command and on reading the serial from the Java app can input the data in a focused input on the current page.
+Implementation guide:
+ - Use DRY principle
+ - Split the java app and broser extension in separate folders
+ - Make it easy to test in development
+ - Make sure it works for theACR122U reader

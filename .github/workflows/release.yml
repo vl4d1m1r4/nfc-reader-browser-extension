@@ -1,0 +1,324 @@
+name: Build and Release Installers
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      chrome_extension_id:
+        description: 'Chrome/Edge Extension ID'
+        required: false
+        default: 'EXTENSION_ID_PLACEHOLDER'
+      firefox_extension_id:
+        description: 'Firefox Extension ID'
+        required: false
+        default: 'nfc-reader@example.com'
+
+env:
+  CHROME_EXTENSION_ID: ${{ github.event.inputs.chrome_extension_id || 'EXTENSION_ID_PLACEHOLDER' }}
+  FIREFOX_EXTENSION_ID: ${{ github.event.inputs.firefox_extension_id || 'nfc-reader@example.com' }}
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 23
+        uses: actions/setup-java@v4
+        with:
+          java-version: '23'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pcscd libpcsclite-dev rpm
+
+      - name: Build with Maven
+        run: |
+          cd nfc-reader-host
+          mvn clean package
+
+      - name: Configure extension IDs in scripts
+        run: |
+          cd nfc-reader-host/src/main/resources/linux
+          sed -i "s/CHROME_EXTENSION_ID:-EXTENSION_ID_PLACEHOLDER/CHROME_EXTENSION_ID:-${{ env.CHROME_EXTENSION_ID }}/g" postinstall.sh
+          sed -i "s/FIREFOX_EXTENSION_ID:-nfc-reader@example.com/FIREFOX_EXTENSION_ID:-${{ env.FIREFOX_EXTENSION_ID }}/g" postinstall.sh
+
+      - name: Create custom JRE
+        run: |
+          cd nfc-reader-host
+          jlink \
+            --add-modules java.base,java.smartcardio \
+            --strip-debug \
+            --no-man-pages \
+            --no-header-files \
+            --compress=zip-6 \
+            --strip-java-debug-attributes \
+            --output target/custom-jre
+
+      - name: Create jpackage app-image
+        run: |
+          cd nfc-reader-host
+          mkdir -p target/jpackage-input
+          cp target/nfc-reader-host-fat.jar target/jpackage-input/
+          jpackage \
+            --input target/jpackage-input \
+            --name nfc-reader-host \
+            --main-jar nfc-reader-host-fat.jar \
+            --main-class com.nfcreader.host.Main \
+            --type app-image \
+            --runtime-image target/custom-jre \
+            --dest target/jpackage
+
+      - name: Create DEB package
+        run: |
+          cd nfc-reader-host
+          chmod +x src/main/resources/linux/postinstall.sh
+          chmod +x src/main/resources/linux/preremove.sh
+          jpackage \
+            --input target/jpackage-input \
+            --name nfc-reader-host \
+            --main-jar nfc-reader-host-fat.jar \
+            --main-class com.nfcreader.host.Main \
+            --type deb \
+            --runtime-image target/custom-jre \
+            --dest target/installers \
+            --app-version 1.0.0 \
+            --vendor "NFC Reader" \
+            --description "Native messaging host for NFC card reader browser extension" \
+            --linux-shortcut \
+            --linux-package-name nfc-reader-host \
+            --linux-deb-maintainer "nfc-reader@example.com" \
+            --linux-app-category "Utility" \
+            --resource-dir src/main/resources/linux
+
+      - name: Create RPM package
+        run: |
+          cd nfc-reader-host
+          jpackage \
+            --input target/jpackage-input \
+            --name nfc-reader-host \
+            --main-jar nfc-reader-host-fat.jar \
+            --main-class com.nfcreader.host.Main \
+            --type rpm \
+            --runtime-image target/custom-jre \
+            --dest target/installers \
+            --app-version 1.0.0 \
+            --vendor "NFC Reader" \
+            --description "Native messaging host for NFC card reader browser extension" \
+            --linux-shortcut \
+            --linux-package-name nfc-reader-host \
+            --linux-rpm-license-type "MIT" \
+            --linux-app-category "Utility" \
+            --resource-dir src/main/resources/linux
+
+      - name: Create tarball
+        run: |
+          cd nfc-reader-host/target/jpackage
+          tar -czf ../installers/nfc-reader-host-linux-x64.tar.gz nfc-reader-host
+
+      - name: Upload Linux artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-installers
+          path: |
+            nfc-reader-host/target/installers/*.deb
+            nfc-reader-host/target/installers/*.rpm
+            nfc-reader-host/target/installers/*.tar.gz
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 23
+        uses: actions/setup-java@v4
+        with:
+          java-version: '23'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Build with Maven
+        run: |
+          cd nfc-reader-host
+          mvn clean package
+
+      - name: Configure extension IDs in scripts
+        run: |
+          cd nfc-reader-host/src/main/resources/macos
+          sed -i '' "s/CHROME_EXTENSION_ID:-EXTENSION_ID_PLACEHOLDER/CHROME_EXTENSION_ID:-${{ env.CHROME_EXTENSION_ID }}/g" postinstall.sh
+          sed -i '' "s/FIREFOX_EXTENSION_ID:-nfc-reader@example.com/FIREFOX_EXTENSION_ID:-${{ env.FIREFOX_EXTENSION_ID }}/g" postinstall.sh
+
+      - name: Create custom JRE
+        run: |
+          cd nfc-reader-host
+          jlink \
+            --add-modules java.base,java.smartcardio \
+            --strip-debug \
+            --no-man-pages \
+            --no-header-files \
+            --compress=zip-6 \
+            --strip-java-debug-attributes \
+            --output target/custom-jre
+
+      - name: Create jpackage app-image
+        run: |
+          cd nfc-reader-host
+          mkdir -p target/jpackage-input
+          cp target/nfc-reader-host-fat.jar target/jpackage-input/
+          jpackage \
+            --input target/jpackage-input \
+            --name nfc-reader-host \
+            --main-jar nfc-reader-host-fat.jar \
+            --main-class com.nfcreader.host.Main \
+            --type app-image \
+            --runtime-image target/custom-jre \
+            --dest target/jpackage
+
+      - name: Create DMG installer
+        run: |
+          cd nfc-reader-host
+          mkdir -p target/installers
+          chmod +x src/main/resources/macos/postinstall.sh
+          jpackage \
+            --input target/jpackage-input \
+            --name nfc-reader-host \
+            --main-jar nfc-reader-host-fat.jar \
+            --main-class com.nfcreader.host.Main \
+            --type dmg \
+            --runtime-image target/custom-jre \
+            --dest target/installers \
+            --app-version 1.0.0 \
+            --vendor "NFC Reader" \
+            --description "Native messaging host for NFC card reader browser extension" \
+            --resource-dir src/main/resources/macos
+
+      - name: Upload macOS artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-installers
+          path: nfc-reader-host/target/installers/*.dmg
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 23
+        uses: actions/setup-java@v4
+        with:
+          java-version: '23'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Build with Maven
+        run: |
+          cd nfc-reader-host
+          mvn clean package
+
+      - name: Configure extension IDs in scripts
+        run: |
+          cd nfc-reader-host/src/main/resources/windows
+          (Get-Content postinstall.bat) -replace 'CHROME_EXTENSION_ID:-EXTENSION_ID_PLACEHOLDER', 'CHROME_EXTENSION_ID:-${{ env.CHROME_EXTENSION_ID }}' | Set-Content postinstall.bat
+          (Get-Content postinstall.bat) -replace 'FIREFOX_EXTENSION_ID:-nfc-reader@example.com', 'FIREFOX_EXTENSION_ID:-${{ env.FIREFOX_EXTENSION_ID }}' | Set-Content postinstall.bat
+
+      - name: Create custom JRE
+        run: |
+          cd nfc-reader-host
+          jlink `
+            --add-modules java.base,java.smartcardio `
+            --strip-debug `
+            --no-man-pages `
+            --no-header-files `
+            --compress=zip-6 `
+            --strip-java-debug-attributes `
+            --output target/custom-jre
+
+      - name: Create jpackage app-image
+        run: |
+          cd nfc-reader-host
+          New-Item -ItemType Directory -Force -Path target/jpackage-input
+          Copy-Item target/nfc-reader-host-fat.jar target/jpackage-input/
+          jpackage `
+            --input target/jpackage-input `
+            --name nfc-reader-host `
+            --main-jar nfc-reader-host-fat.jar `
+            --main-class com.nfcreader.host.Main `
+            --type app-image `
+            --runtime-image target/custom-jre `
+            --dest target/jpackage
+
+      - name: Create MSI installer
+        run: |
+          cd nfc-reader-host
+          New-Item -ItemType Directory -Force -Path target/installers
+          jpackage `
+            --input target/jpackage-input `
+            --name "NFC Reader Host" `
+            --main-jar nfc-reader-host-fat.jar `
+            --main-class com.nfcreader.host.Main `
+            --type msi `
+            --runtime-image target/custom-jre `
+            --dest target/installers `
+            --app-version 1.0.0 `
+            --vendor "NFC Reader" `
+            --description "Native messaging host for NFC card reader browser extension" `
+            --win-dir-chooser `
+            --win-menu `
+            --win-shortcut `
+            --resource-dir src/main/resources/windows
+
+      - name: Create EXE installer
+        run: |
+          cd nfc-reader-host
+          jpackage `
+            --input target/jpackage-input `
+            --name "NFC Reader Host" `
+            --main-jar nfc-reader-host-fat.jar `
+            --main-class com.nfcreader.host.Main `
+            --type exe `
+            --runtime-image target/custom-jre `
+            --dest target/installers `
+            --app-version 1.0.0 `
+            --vendor "NFC Reader" `
+            --description "Native messaging host for NFC card reader browser extension" `
+            --win-dir-chooser `
+            --win-menu `
+            --win-shortcut `
+            --resource-dir src/main/resources/windows
+
+      - name: Upload Windows artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-installers
+          path: |
+            nfc-reader-host/target/installers/*.msi
+            nfc-reader-host/target/installers/*.exe
+
+  create-release:
+    needs: [build-linux, build-macos, build-windows]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            linux-installers/*
+            macos-installers/*
+            windows-installers/*
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

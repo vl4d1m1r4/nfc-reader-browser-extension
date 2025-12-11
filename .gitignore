@@ -1,0 +1,88 @@
+# Project-wide .gitignore
+
+# Java / Maven
+*.class
+*.jar
+*.war
+*.ear
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+
+# IDE
+.idea/
+*.iml
+*.iws
+.project
+.classpath
+.settings/
+.vscode/
+*.swp
+*.swo
+*~
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+.directory
+
+# Build outputs
+nfc-reader-host/target/
+*.build_artifacts.txt
+*.debug
+*.debuginfo
+*.dSYM/
+
+# Native binaries
+nfc-reader-host
+nfc-reader-host.exe
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.bak
+*.swp
+
+# Browser extension
+browser-extension/web-ext-artifacts/
+browser-extension/*.xpi
+browser-extension/*.zip
+
+# Distribution packages
+dist/
+release/
+*.tar.gz
+*.zip
+
+# Environment
+.env
+.env.local
+
+# Node (if used for tooling)
+node_modules/
+package-lock.json
+yarn.lock
+
+# Test coverage
+coverage/
+.nyc_output/

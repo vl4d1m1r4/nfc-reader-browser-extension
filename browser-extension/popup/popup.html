@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>NFC Reader</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>NFC Reader</h1>
+    </div>
+
+    <div class="status" id="status">
+      <span class="status-indicator" id="statusIndicator"></span>
+      <span id="statusText">Connecting...</span>
+    </div>
+
+    <div class="error" id="errorSection" style="display: none;">
+      <div class="error-message" id="errorMessage"></div>
+    </div>
+
+    <div class="section">
+      <label for="readerSelect">Select Reader:</label>
+      <select id="readerSelect" disabled>
+        <option value="">Loading readers...</option>
+      </select>
+      <button id="refreshBtn" class="btn-secondary" disabled>Refresh</button>
+    </div>
+
+    <div class="section">
+      <label for="formatSelect">UID Format:</label>
+      <select id="formatSelect">
+        <option value="plain">Plain (00112233445566)</option>
+        <option value="spaced">Spaced (00 11 22 33 44 55 66)</option>
+        <option value="colon">Colon separated (00:11:22:33:44:55:66)</option>
+        <option value="dash">Dash separated (00-11-22-33-44-55-66)</option>
+      </select>
+    </div>
+
+    <div class="section">
+      <button id="toggleBtn" class="btn-primary" disabled>Start Listening</button>
+    </div>
+
+    <div class="section" id="uidSection" style="display: none;">
+      <div class="uid-display">
+        <label>Last Card UID:</label>
+        <div class="uid-value" id="uidValue">-</div>
+        <div class="uid-type" id="uidType"></div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div class="help-text">
+        Focus on an input field, then scan an NFC card to auto-fill its UID.
+      </div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
