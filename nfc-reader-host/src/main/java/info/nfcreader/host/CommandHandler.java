@@ -112,6 +112,7 @@ public class CommandHandler {
             
             // Start listening in background thread
             listeningThread = new Thread(() -> {
+                int consecutiveErrors = 0;
                 while (isListening) {
                     try {
                         String uid = activeCardReader.waitForCard();
@@ -119,9 +120,26 @@ public class CommandHandler {
                             // Send card detected event
                             sendCardDetectedEvent(uid);
                         }
+                        // Reset error counter on successful read (whether card found or not)
+                        consecutiveErrors = 0;
+                    } catch (CardException e) {
+                        if (isListening) {
+                            consecutiveErrors++;
+                            // Send error only once, then stop listening to prevent spam
+                            if (consecutiveErrors == 1) {
+                                sendErrorEvent("Error reading card: " + e.getMessage());
+                            }
+                            // Stop listening after 3 consecutive errors (likely reader disconnected)
+                            if (consecutiveErrors >= 3) {
+                                isListening = false;
+                                break;
+                            }
+                        }
                     } catch (Exception e) {
                         if (isListening) {
                             sendErrorEvent("Error reading card: " + e.getMessage());
+                            isListening = false;
+                            break;
                         }
                     }
                     

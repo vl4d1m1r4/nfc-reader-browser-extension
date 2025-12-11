@@ -9,7 +9,7 @@ let currentState = {
   isListening: false,
   lastUID: null,
   error: null,
-  uidFormat: 'plain'
+  uidFormat: 'spaced'
 };
 
 // DOM elements
@@ -33,27 +33,35 @@ async function initialize() {
   console.log('Initializing popup');
   console.log('Install notice element:', installNotice);
   
+  // Set up event listeners first
+  setupEventListeners();
+  
   // Load saved format preference
   chrome.storage.local.get(['uidFormat'], (result) => {
     if (result.uidFormat) {
       currentState.uidFormat = result.uidFormat;
-      formatSelect.value = result.uidFormat;
+      if (formatSelect) formatSelect.value = result.uidFormat;
+    } else {
+      // Set default to spaced if no preference saved
+      if (formatSelect) formatSelect.value = 'spaced';
     }
   });
   
   // Get current state from background
-  chrome.runtime.sendMessage({ action: 'get-state' }, (response) => {
-    console.log('Received state from background:', response);
-    if (response && response.state) {
-      updateState(response.state);
-    }
-  });
-  
-  // Request reader list
-  chrome.runtime.sendMessage({ action: 'list-readers' });
-  
-  // Set up event listeners
-  setupEventListeners();
+  try {
+    chrome.runtime.sendMessage({ action: 'get-state' }, (response) => {
+      if (chrome.runtime.lastError) {
+        console.error('Error getting state:', chrome.runtime.lastError);
+        return;
+      }
+      console.log('Received state from background:', response);
+      if (response && response.state) {
+        updateState(response.state);
+      }
+    });
+  } catch (error) {
+    console.error('Failed to send get-state message:', error);
+  }
 }
 
 /**
@@ -154,9 +162,16 @@ function updateState(state) {
   if (state.isListening) {
     toggleBtn.textContent = 'Stop Listening';
     toggleBtn.classList.add('stop');
+    // Hide stop button if only one reader
+    if (state.readers && state.readers.length === 1) {
+      toggleBtn.style.display = 'none';
+    } else {
+      toggleBtn.style.display = '';
+    }
   } else {
     toggleBtn.textContent = 'Start Listening';
     toggleBtn.classList.remove('stop');
+    toggleBtn.style.display = '';
   }
   
   // Update UID display
