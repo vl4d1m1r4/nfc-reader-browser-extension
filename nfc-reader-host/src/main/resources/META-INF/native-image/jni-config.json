@@ -1,0 +1,18 @@
+[
+  {
+    "name": "sun.security.smartcardio.PCSC",
+    "methods": [
+      {"name": "SCardEstablishContext", "parameterTypes": ["int"]},
+      {"name": "SCardConnect", "parameterTypes": ["long", "java.lang.String", "int", "int"]},
+      {"name": "SCardDisconnect", "parameterTypes": ["long", "int"]},
+      {"name": "SCardStatus", "parameterTypes": ["long", "byte[]"]},
+      {"name": "SCardGetStatusChange", "parameterTypes": ["long", "long", "int[]", "java.lang.String[]", "int[]", "int[]", "int[]"]},
+      {"name": "SCardTransmit", "parameterTypes": ["long", "int", "byte[]", "int", "int", "byte[]", "int", "int"]},
+      {"name": "SCardListReaders", "parameterTypes": ["long"]},
+      {"name": "SCardBeginTransaction", "parameterTypes": ["long"]},
+      {"name": "SCardEndTransaction", "parameterTypes": ["long", "int"]},
+      {"name": "SCardControl", "parameterTypes": ["long", "int", "byte[]", "int", "int", "byte[]", "int", "int"]},
+      {"name": "SCardReleaseContext", "parameterTypes": ["long"]}
+    ]
+  }
+]

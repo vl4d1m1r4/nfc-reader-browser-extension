@@ -47,9 +47,11 @@ nfc-reader-host/target/
 *.debuginfo
 *.dSYM/
 
-# Native binaries
-nfc-reader-host
-nfc-reader-host.exe
+# Native binaries (compiled executables, not the source directory)
+/nfc-reader-host/target/jpackage/**/nfc-reader-host
+/nfc-reader-host/target/jpackage/**/nfc-reader-host.exe
+*.exe
+*.bin
 
 # Logs
 *.log
