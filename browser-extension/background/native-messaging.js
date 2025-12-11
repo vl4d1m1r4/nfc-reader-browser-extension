@@ -17,11 +17,17 @@ class NativeMessaging {
 
   /**
    * Connects to the native messaging host
+   * @param {boolean} isRetry - Whether this is a reconnection attempt
    */
-  connect() {
+  connect(isRetry = false) {
     if (this.isConnected) {
       console.log('Already connected to native host');
       return;
+    }
+
+    // Only reset attempts if this is a fresh connection request (not a retry)
+    if (!isRetry) {
+      this.reconnectAttempts = 0;
     }
 
     try {
@@ -37,9 +43,18 @@ class NativeMessaging {
       });
 
       this.isConnected = true;
-      this.reconnectAttempts = 0;
       this.hostNotInstalled = false;
       console.log('Connected to native host');
+      
+      // Reset reconnect attempts after 5 seconds of stable connection
+      if (this.connectionStableTimer) {
+        clearTimeout(this.connectionStableTimer);
+      }
+      this.connectionStableTimer = setTimeout(() => {
+        if (this.isConnected) {
+          this.reconnectAttempts = 0;
+        }
+      }, 5000);
       
       this.emit('connected');
       
@@ -58,6 +73,10 @@ class NativeMessaging {
    * Disconnects from the native messaging host
    */
   disconnect() {
+    if (this.connectionStableTimer) {
+      clearTimeout(this.connectionStableTimer);
+      this.connectionStableTimer = null;
+    }
     if (this.port) {
       this.port.disconnect();
       this.port = null;
@@ -107,6 +126,11 @@ class NativeMessaging {
   handleDisconnect() {
     console.log('Disconnected from native host');
     
+    if (this.connectionStableTimer) {
+      clearTimeout(this.connectionStableTimer);
+      this.connectionStableTimer = null;
+    }
+    
     const error = chrome.runtime.lastError;
     if (error) {
       console.error('Native host disconnect error:', error.message);
@@ -133,7 +157,7 @@ class NativeMessaging {
     if (!this.hostNotInstalled && this.reconnectAttempts < this.maxReconnectAttempts) {
       this.reconnectAttempts++;
       console.log(`Reconnect attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts}`);
-      setTimeout(() => this.connect(), 2000);
+      setTimeout(() => this.connect(true), 2000);
     } else if (this.hostNotInstalled) {
       console.log('Host not installed, skipping reconnection attempts');
     }
