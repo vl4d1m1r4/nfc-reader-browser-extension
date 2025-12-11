@@ -108,7 +108,7 @@ browser-extension/
 
 **Background Script:**
 - Detect OS using `navigator.platform` or `runtime.getPlatformInfo()`
-- Establish native messaging connection to `com.nfcreader.host`
+- Establish native messaging connection to `info.nfcreader.host`
 - Manage reader state
 - Relay messages between popup and native host
 - Handle connection errors and reconnection
@@ -141,10 +141,10 @@ browser-extension/
 #### 3.1 Host Manifest Files
 Create OS-specific host manifests for each browser:
 
-**Linux - Chrome/Edge:** `com.nfcreader.host.json`
+**Linux - Chrome/Edge:** `info.nfcreader.host.json`
 ```json
 {
-  "name": "com.nfcreader.host",
+  "name": "info.nfcreader.host",
   "description": "NFC Reader Native Messaging Host",
   "path": "/usr/local/bin/nfc-reader-host",
   "type": "stdio",
@@ -154,10 +154,10 @@ Create OS-specific host manifests for each browser:
 }
 ```
 
-**macOS - Chrome/Edge:** `com.nfcreader.host.json`
+**macOS - Chrome/Edge:** `info.nfcreader.host.json`
 ```json
 {
-  "name": "com.nfcreader.host",
+  "name": "info.nfcreader.host",
   "description": "NFC Reader Native Messaging Host",
   "path": "/usr/local/bin/nfc-reader-host",
   "type": "stdio",
@@ -167,10 +167,10 @@ Create OS-specific host manifests for each browser:
 }
 ```
 
-**Windows - Chrome/Edge:** `com.nfcreader.host.json`
+**Windows - Chrome/Edge:** `info.nfcreader.host.json`
 ```json
 {
-  "name": "com.nfcreader.host",
+  "name": "info.nfcreader.host",
   "description": "NFC Reader Native Messaging Host",
   "path": "C:\\Program Files\\NFCReader\\nfc-reader-host.exe",
   "type": "stdio",
@@ -183,7 +183,7 @@ Create OS-specific host manifests for each browser:
 **Firefox (all platforms):** `nfcreader.json`
 ```json
 {
-  "name": "com.nfcreader.host",
+  "name": "info.nfcreader.host",
   "description": "NFC Reader Native Messaging Host",
   "path": "<os-specific-path>",
   "type": "stdio",
@@ -212,8 +212,8 @@ Create OS-specific host manifests for each browser:
 **Windows (`install-windows.bat`):**
 - Copy `nfc-reader-host.exe` to `C:\Program Files\NFCReader\`
 - Create registry entries for Chrome/Edge:
-  - `HKEY_CURRENT_USER\Software\Google\Chrome\NativeMessagingHosts\com.nfcreader.host`
-  - `HKEY_CURRENT_USER\Software\Microsoft\Edge\NativeMessagingHosts\com.nfcreader.host`
+  - `HKEY_CURRENT_USER\Software\Google\Chrome\NativeMessagingHosts\info.nfcreader.host`
+  - `HKEY_CURRENT_USER\Software\Microsoft\Edge\NativeMessagingHosts\info.nfcreader.host`
 - Install Firefox manifest to `%APPDATA%\Mozilla\NativeMessagingHosts\`
 - Add to PATH (optional)
 

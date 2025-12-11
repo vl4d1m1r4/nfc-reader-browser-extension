@@ -112,20 +112,20 @@ This method creates artifacts but does NOT create a GitHub Release (only tag pus
 The installers automatically configure native messaging manifests:
 
 **Linux (DEB/RPM)**:
-- Chrome: `/etc/opt/chrome/native-messaging-hosts/com.nfcreader.host.json`
-- Chromium: `/etc/chromium/native-messaging-hosts/com.nfcreader.host.json`
-- Edge: `/etc/opt/edge/native-messaging-hosts/com.nfcreader.host.json`
-- Firefox: `/usr/lib/mozilla/native-messaging-hosts/com.nfcreader.host.json`
+- Chrome: `/etc/opt/chrome/native-messaging-hosts/info.nfcreader.host.json`
+- Chromium: `/etc/chromium/native-messaging-hosts/info.nfcreader.host.json`
+- Edge: `/etc/opt/edge/native-messaging-hosts/info.nfcreader.host.json`
+- Firefox: `/usr/lib/mozilla/native-messaging-hosts/info.nfcreader.host.json`
 
 **macOS (DMG)**:
-- Chrome: `/Library/Google/Chrome/NativeMessagingHosts/com.nfcreader.host.json`
-- Edge: `/Library/Application Support/Microsoft Edge/NativeMessagingHosts/com.nfcreader.host.json`
-- Firefox: `/Library/Application Support/Mozilla/NativeMessagingHosts/com.nfcreader.host.json`
+- Chrome: `/Library/Google/Chrome/NativeMessagingHosts/info.nfcreader.host.json`
+- Edge: `/Library/Application Support/Microsoft Edge/NativeMessagingHosts/info.nfcreader.host.json`
+- Firefox: `/Library/Application Support/Mozilla/NativeMessagingHosts/info.nfcreader.host.json`
 
 **Windows (MSI/EXE)**:
-- Chrome: Registry key `HKLM\SOFTWARE\Google\Chrome\NativeMessagingHosts\com.nfcreader.host`
-- Edge: Registry key `HKLM\SOFTWARE\Microsoft\Edge\NativeMessagingHosts\com.nfcreader.host`
-- Firefox: `C:\ProgramData\Mozilla\NativeMessagingHosts\com.nfcreader.host.json`
+- Chrome: Registry key `HKLM\SOFTWARE\Google\Chrome\NativeMessagingHosts\info.nfcreader.host`
+- Edge: Registry key `HKLM\SOFTWARE\Microsoft\Edge\NativeMessagingHosts\info.nfcreader.host`
+- Firefox: `C:\ProgramData\Mozilla\NativeMessagingHosts\info.nfcreader.host.json`
 | Windows | windows-latest | Temurin 11 | MSI, EXE |
 
 ### Build Steps

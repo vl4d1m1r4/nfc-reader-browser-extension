@@ -25,20 +25,20 @@ else
 fi
 
 # Remove Chrome manifest
-if [ -f "$CHROME_DIR/com.nfcreader.host.json" ]; then
-    rm "$CHROME_DIR/com.nfcreader.host.json"
+if [ -f "$CHROME_DIR/info.nfcreader.host.json" ]; then
+    rm "$CHROME_DIR/info.nfcreader.host.json"
     echo "✓ Chrome manifest removed"
 fi
 
 # Remove Chromium manifest
-if [ -f "$CHROMIUM_DIR/com.nfcreader.host.json" ]; then
-    rm "$CHROMIUM_DIR/com.nfcreader.host.json"
+if [ -f "$CHROMIUM_DIR/info.nfcreader.host.json" ]; then
+    rm "$CHROMIUM_DIR/info.nfcreader.host.json"
     echo "✓ Chromium manifest removed"
 fi
 
 # Remove Edge manifest
-if [ -f "$EDGE_DIR/com.nfcreader.host.json" ]; then
-    rm "$EDGE_DIR/com.nfcreader.host.json"
+if [ -f "$EDGE_DIR/info.nfcreader.host.json" ]; then
+    rm "$EDGE_DIR/info.nfcreader.host.json"
     echo "✓ Edge manifest removed"
 fi
 

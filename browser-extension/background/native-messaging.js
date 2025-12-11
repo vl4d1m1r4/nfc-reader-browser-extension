@@ -3,7 +3,7 @@
  * Manages communication with the native host application
  */
 
-const NATIVE_HOST_NAME = 'com.nfcreader.host';
+const NATIVE_HOST_NAME = 'info.nfcreader.host';
 
 class NativeMessaging {
   constructor() {

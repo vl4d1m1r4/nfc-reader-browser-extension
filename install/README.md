@@ -92,8 +92,8 @@ The script will:
 - Ask for your Chrome/Edge extension ID
 - Optionally install Firefox manifest
 - Create registry entries:
-  - Chrome: `HKEY_CURRENT_USER\Software\Google\Chrome\NativeMessagingHosts\com.nfcreader.host`
-  - Edge: `HKEY_CURRENT_USER\Software\Microsoft\Edge\NativeMessagingHosts\com.nfcreader.host`
+  - Chrome: `HKEY_CURRENT_USER\Software\Google\Chrome\NativeMessagingHosts\info.nfcreader.host`
+  - Edge: `HKEY_CURRENT_USER\Software\Microsoft\Edge\NativeMessagingHosts\info.nfcreader.host`
 - Install Firefox manifest to: `%APPDATA%\Mozilla\NativeMessagingHosts\`
 
 **Uninstall (Run as Administrator):**

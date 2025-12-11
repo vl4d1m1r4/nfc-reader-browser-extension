@@ -70,7 +70,7 @@ jobs:
             --input target/jpackage-input \
             --name nfc-reader-host \
             --main-jar nfc-reader-host-fat.jar \
-            --main-class com.nfcreader.host.Main \
+            --main-class info.nfcreader.host.Main \
             --type app-image \
             --runtime-image target/custom-jre \
             --dest target/jpackage
@@ -84,7 +84,7 @@ jobs:
             --input target/jpackage-input \
             --name nfc-reader-host \
             --main-jar nfc-reader-host-fat.jar \
-            --main-class com.nfcreader.host.Main \
+            --main-class info.nfcreader.host.Main \
             --type deb \
             --runtime-image target/custom-jre \
             --dest target/installers \
@@ -104,7 +104,7 @@ jobs:
             --input target/jpackage-input \
             --name nfc-reader-host \
             --main-jar nfc-reader-host-fat.jar \
-            --main-class com.nfcreader.host.Main \
+            --main-class info.nfcreader.host.Main \
             --type rpm \
             --runtime-image target/custom-jre \
             --dest target/installers \
@@ -176,7 +176,7 @@ jobs:
             --input target/jpackage-input \
             --name nfc-reader-host \
             --main-jar nfc-reader-host-fat.jar \
-            --main-class com.nfcreader.host.Main \
+            --main-class info.nfcreader.host.Main \
             --type app-image \
             --runtime-image target/custom-jre \
             --dest target/jpackage
@@ -190,7 +190,7 @@ jobs:
             --input target/jpackage-input \
             --name nfc-reader-host \
             --main-jar nfc-reader-host-fat.jar \
-            --main-class com.nfcreader.host.Main \
+            --main-class info.nfcreader.host.Main \
             --type dmg \
             --runtime-image target/custom-jre \
             --dest target/installers \
@@ -250,7 +250,7 @@ jobs:
             --input target/jpackage-input `
             --name nfc-reader-host `
             --main-jar nfc-reader-host-fat.jar `
-            --main-class com.nfcreader.host.Main `
+            --main-class info.nfcreader.host.Main `
             --type app-image `
             --runtime-image target/custom-jre `
             --dest target/jpackage
@@ -263,7 +263,7 @@ jobs:
             --input target/jpackage-input `
             --name "NFC Reader Host" `
             --main-jar nfc-reader-host-fat.jar `
-            --main-class com.nfcreader.host.Main `
+            --main-class info.nfcreader.host.Main `
             --type msi `
             --runtime-image target/custom-jre `
             --dest target/installers `
@@ -282,7 +282,7 @@ jobs:
             --input target/jpackage-input `
             --name "NFC Reader Host" `
             --main-jar nfc-reader-host-fat.jar `
-            --main-class com.nfcreader.host.Main `
+            --main-class info.nfcreader.host.Main `
             --type exe `
             --runtime-image target/custom-jre `
             --dest target/installers `

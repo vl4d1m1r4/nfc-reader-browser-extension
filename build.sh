@@ -81,7 +81,7 @@ jpackage \
   --input target/jpackage-input \
   --name nfc-reader-host \
   --main-jar nfc-reader-host-fat.jar \
-  --main-class com.nfcreader.host.Main \
+  --main-class info.nfcreader.host.Main \
   --type app-image \
   --runtime-image target/custom-jre \
   --dest target/jpackage

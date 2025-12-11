@@ -67,17 +67,17 @@ if [ -n "$EXTENSION_ID" ]; then
     
     # Chrome
     mkdir -p "$CHROME_DIR"
-    sed "s/EXTENSION_ID_PLACEHOLDER/$EXTENSION_ID/g" "$SCRIPT_DIR/com.nfcreader.host.json" > "$CHROME_DIR/com.nfcreader.host.json"
+    sed "s/EXTENSION_ID_PLACEHOLDER/$EXTENSION_ID/g" "$SCRIPT_DIR/info.nfcreader.host.json" > "$CHROME_DIR/info.nfcreader.host.json"
     echo "✓ Chrome manifest installed"
     
     # Chromium
     mkdir -p "$CHROMIUM_DIR"
-    sed "s/EXTENSION_ID_PLACEHOLDER/$EXTENSION_ID/g" "$SCRIPT_DIR/com.nfcreader.host.json" > "$CHROMIUM_DIR/com.nfcreader.host.json"
+    sed "s/EXTENSION_ID_PLACEHOLDER/$EXTENSION_ID/g" "$SCRIPT_DIR/info.nfcreader.host.json" > "$CHROMIUM_DIR/info.nfcreader.host.json"
     echo "✓ Chromium manifest installed"
     
     # Edge
     mkdir -p "$EDGE_DIR"
-    sed "s/EXTENSION_ID_PLACEHOLDER/$EXTENSION_ID/g" "$SCRIPT_DIR/com.nfcreader.host.json" > "$EDGE_DIR/com.nfcreader.host.json"
+    sed "s/EXTENSION_ID_PLACEHOLDER/$EXTENSION_ID/g" "$SCRIPT_DIR/info.nfcreader.host.json" > "$EDGE_DIR/info.nfcreader.host.json"
     echo "✓ Edge manifest installed"
 else
     echo "Skipping Chrome/Edge installation"
@@ -104,9 +104,9 @@ echo "Installed locations:"
 echo "  Application: $LIB_DIR/$JPACKAGE_DIR"
 echo "  Binary: $WRAPPER_PATH"
 if [ -n "$EXTENSION_ID" ]; then
-    echo "  Chrome: $CHROME_DIR/com.nfcreader.host.json"
-    echo "  Chromium: $CHROMIUM_DIR/com.nfcreader.host.json"
-    echo "  Edge: $EDGE_DIR/com.nfcreader.host.json"
+    echo "  Chrome: $CHROME_DIR/info.nfcreader.host.json"
+    echo "  Chromium: $CHROMIUM_DIR/info.nfcreader.host.json"
+    echo "  Edge: $EDGE_DIR/info.nfcreader.host.json"
 fi
 if [ "$INSTALL_FIREFOX" = "y" ] || [ "$INSTALL_FIREFOX" = "Y" ]; then
     echo "  Firefox: $FIREFOX_DIR/nfcreader.json"

@@ -31,13 +31,13 @@ if exist "%BINARY_PATH%" (
 )
 
 REM Remove Chrome registry key
-reg delete "HKEY_CURRENT_USER\Software\Google\Chrome\NativeMessagingHosts\com.nfcreader.host" /f >nul 2>&1
+reg delete "HKEY_CURRENT_USER\Software\Google\Chrome\NativeMessagingHosts\info.nfcreader.host" /f >nul 2>&1
 if %errorLevel% EQU 0 (
     echo [OK] Chrome manifest removed
 )
 
 REM Remove Edge registry key
-reg delete "HKEY_CURRENT_USER\Software\Microsoft\Edge\NativeMessagingHosts\com.nfcreader.host" /f >nul 2>&1
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Edge\NativeMessagingHosts\info.nfcreader.host" /f >nul 2>&1
 if %errorLevel% EQU 0 (
     echo [OK] Edge manifest removed
 )
@@ -49,8 +49,8 @@ if exist "%FIREFOX_DIR%\nfcreader.json" (
 )
 
 REM Remove temp manifest file
-if exist "%TEMP%\com.nfcreader.host.json" (
-    del /F /Q "%TEMP%\com.nfcreader.host.json"
+if exist "%TEMP%\info.nfcreader.host.json" (
+    del /F /Q "%TEMP%\info.nfcreader.host.json"
 )
 
 echo.

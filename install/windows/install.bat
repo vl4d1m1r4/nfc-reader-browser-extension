@@ -58,10 +58,10 @@ if not "%EXTENSION_ID%"=="" (
     echo.
     
     REM Create Chrome manifest with extension ID
-    powershell -Command "(Get-Content 'com.nfcreader.host.json') -replace 'EXTENSION_ID_PLACEHOLDER', '%EXTENSION_ID%' | Set-Content '%TEMP%\com.nfcreader.host.json'"
+    powershell -Command "(Get-Content 'info.nfcreader.host.json') -replace 'EXTENSION_ID_PLACEHOLDER', '%EXTENSION_ID%' | Set-Content '%TEMP%\info.nfcreader.host.json'"
     
     REM Chrome registry
-    reg add "HKEY_CURRENT_USER\Software\Google\Chrome\NativeMessagingHosts\com.nfcreader.host" /ve /t REG_SZ /d "%TEMP%\com.nfcreader.host.json" /f >nul 2>&1
+    reg add "HKEY_CURRENT_USER\Software\Google\Chrome\NativeMessagingHosts\info.nfcreader.host" /ve /t REG_SZ /d "%TEMP%\info.nfcreader.host.json" /f >nul 2>&1
     if %errorLevel% EQU 0 (
         echo [OK] Chrome manifest registered
     ) else (
@@ -69,7 +69,7 @@ if not "%EXTENSION_ID%"=="" (
     )
     
     REM Edge registry
-    reg add "HKEY_CURRENT_USER\Software\Microsoft\Edge\NativeMessagingHosts\com.nfcreader.host" /ve /t REG_SZ /d "%TEMP%\com.nfcreader.host.json" /f >nul 2>&1
+    reg add "HKEY_CURRENT_USER\Software\Microsoft\Edge\NativeMessagingHosts\info.nfcreader.host" /ve /t REG_SZ /d "%TEMP%\info.nfcreader.host.json" /f >nul 2>&1
     if %errorLevel% EQU 0 (
         echo [OK] Edge manifest registered
     ) else (
