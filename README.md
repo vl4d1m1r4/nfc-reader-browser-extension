@@ -12,7 +12,6 @@ A browser extension that reads NFC-A cards from an external USB-connected reader
 - 💻 **Cross-Platform**: Linux, macOS, and Windows support
 - 🌐 **Multi-Browser**: Chrome, Edge, and Firefox compatible
 - 🔒 **Secure**: Native messaging protocol with local-only communication
-- ⚡ **Native Performance**: GraalVM native binaries (no JRE required)
 
 ## Architecture
 
@@ -139,17 +138,6 @@ Common compatible cards:
 - NTAG series
 - Many access control cards
 
-## Documentation
-
-- **[Quick Start Guide](QUICKSTART.md)** - Get up and running in 5 minutes ⚡
-- **[Troubleshooting Guide](TROUBLESHOOTING.md)** - Common issues and solutions 🔧
-- **[Development Guide](DEVELOPMENT.md)** - Build, test, and contribute 💻
-- [Java Host README](nfc-reader-host/README.md) - Build instructions and API
-- [Extension README](browser-extension/README.md) - Extension usage and development
-- [Installation Guide](install/README.md) - Platform-specific installation
-- [Implementation Plan](PLAN.md) - Detailed project plan
-- [Implementation Summary](IMPLEMENTATION_SUMMARY.md) - What has been built
-
 ## Development
 
 ### Building
@@ -160,9 +148,6 @@ cd nfc-reader-host
 
 # Regular JAR (for development)
 mvn clean package
-
-# Native binary (for production)
-mvn clean package -Pnative
 ```
 
 **Extension:**
