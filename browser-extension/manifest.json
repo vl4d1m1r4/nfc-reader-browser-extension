@@ -12,7 +12,8 @@
   
   "background": {
     "service_worker": "background/background.js",
-    "type": "module"
+    "type": "module",
+    "scripts": ["background/background.js"]
   },
   
   "action": {
