@@ -23,6 +23,7 @@ jobs:
           java-version: '23'
           distribution: 'temurin'
           cache: maven
+          cache-dependency-path: 'nfc-reader-host/pom.xml'
 
       - name: Verify Java installation
         run: |
