@@ -115,7 +115,7 @@ uninstall.bat
 ### Firefox
 
 Firefox doesn't use extension IDs in the same way. The manifest uses:
-- Extension ID: `nfc-reader@example.com` (configured in manifest)
+- Extension ID: `nfc@nfcreader.info` (configured in manifest)
 
 ## Verification
 

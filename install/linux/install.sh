@@ -90,9 +90,18 @@ echo "Step 3: Firefox Installation"
 read -p "Install for Firefox? (y/n): " INSTALL_FIREFOX
 
 if [ "$INSTALL_FIREFOX" = "y" ] || [ "$INSTALL_FIREFOX" = "Y" ]; then
+    echo ""
+    echo "For Firefox, you need the extension ID from the manifest."
+    echo "Default is: nfc@nfcreader.info"
+    read -p "Enter Firefox extension ID (or press Enter for default): " FIREFOX_EXTENSION_ID
+    
+    if [ -z "$FIREFOX_EXTENSION_ID" ]; then
+        FIREFOX_EXTENSION_ID="nfc@nfcreader.info"
+    fi
+    
     mkdir -p "$FIREFOX_DIR"
-    cp "$SCRIPT_DIR/nfcreader.json" "$FIREFOX_DIR/nfcreader.json"
-    echo "✓ Firefox manifest installed"
+    sed "s/nfc@nfcreader.info/$FIREFOX_EXTENSION_ID/g" "$SCRIPT_DIR/nfcreader.json" > "$FIREFOX_DIR/info.nfcreader.host.json"
+    echo "✓ Firefox manifest installed with extension ID: $FIREFOX_EXTENSION_ID"
 fi
 
 echo ""
@@ -109,7 +118,7 @@ if [ -n "$EXTENSION_ID" ]; then
     echo "  Edge: $EDGE_DIR/info.nfcreader.host.json"
 fi
 if [ "$INSTALL_FIREFOX" = "y" ] || [ "$INSTALL_FIREFOX" = "Y" ]; then
-    echo "  Firefox: $FIREFOX_DIR/nfcreader.json"
+    echo "  Firefox: $FIREFOX_DIR/info.nfcreader.host.json"
 fi
 echo ""
 echo "Next steps:"

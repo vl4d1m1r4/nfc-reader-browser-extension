@@ -4,6 +4,6 @@
   "path": "C:\\Program Files\\NFCReader\\nfc-reader-host.exe",
   "type": "stdio",
   "allowed_extensions": [
-    "nfc-reader@example.com"
+    "nfc@nfcreader.info"
   ]
 }

@@ -9,7 +9,7 @@ BINARY_PATH="${APP_PATH}/Contents/MacOS/nfc-reader-host"
 
 # Get extension IDs from environment or use defaults
 CHROME_EXT_ID="${CHROME_EXTENSION_ID:-EXTENSION_ID_PLACEHOLDER}"
-FIREFOX_EXT_ID="${FIREFOX_EXTENSION_ID:-nfc-reader@example.com}"
+FIREFOX_EXT_ID="${FIREFOX_EXTENSION_ID:-nfc@nfcreader.info}"
 
 # Install native messaging manifests for all users
 install_manifests() {

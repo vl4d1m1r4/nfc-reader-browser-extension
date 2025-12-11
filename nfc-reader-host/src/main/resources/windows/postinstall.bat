@@ -17,7 +17,7 @@ if "%CHROME_EXTENSION_ID%"=="" (
 )
 
 if "%FIREFOX_EXTENSION_ID%"=="" (
-    set FIREFOX_EXT_ID=nfc-reader@example.com
+    set FIREFOX_EXT_ID=nfc@nfcreader.info
 ) else (
     set FIREFOX_EXT_ID=%FIREFOX_EXTENSION_ID%
 )

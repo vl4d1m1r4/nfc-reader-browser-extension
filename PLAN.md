@@ -188,7 +188,7 @@ Create OS-specific host manifests for each browser:
   "path": "<os-specific-path>",
   "type": "stdio",
   "allowed_extensions": [
-    "nfc-reader@example.com"
+    "nfc@nfcreader.info"
   ]
 }
 ```

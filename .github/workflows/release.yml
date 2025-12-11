@@ -13,11 +13,11 @@ on:
       firefox_extension_id:
         description: 'Firefox Extension ID'
         required: false
-        default: 'nfc-reader@example.com'
+        default: 'nfc@nfcreader.info'
 
 env:
   CHROME_EXTENSION_ID: ${{ github.event.inputs.chrome_extension_id || 'EXTENSION_ID_PLACEHOLDER' }}
-  FIREFOX_EXTENSION_ID: ${{ github.event.inputs.firefox_extension_id || 'nfc-reader@example.com' }}
+  FIREFOX_EXTENSION_ID: ${{ github.event.inputs.firefox_extension_id || 'nfc@nfcreader.info' }}
 
 jobs:
   build-linux:
@@ -48,7 +48,7 @@ jobs:
         run: |
           cd nfc-reader-host/src/main/resources/linux
           sed -i "s/CHROME_EXTENSION_ID:-EXTENSION_ID_PLACEHOLDER/CHROME_EXTENSION_ID:-${{ env.CHROME_EXTENSION_ID }}/g" postinstall.sh
-          sed -i "s/FIREFOX_EXTENSION_ID:-nfc-reader@example.com/FIREFOX_EXTENSION_ID:-${{ env.FIREFOX_EXTENSION_ID }}/g" postinstall.sh
+          sed -i "s/FIREFOX_EXTENSION_ID:-nfc@nfcreader.info/FIREFOX_EXTENSION_ID:-${{ env.FIREFOX_EXTENSION_ID }}/g" postinstall.sh
 
       - name: Create custom JRE
         run: |
@@ -94,7 +94,7 @@ jobs:
             --description "Native messaging host for NFC card reader browser extension" \
             --linux-shortcut \
             --linux-package-name nfc-reader-host \
-            --linux-deb-maintainer "nfc-reader@example.com" \
+            --linux-deb-maintainer "nfc@nfcreader.info" \
             --linux-app-category "Utility" \
             --resource-dir src/main/resources/linux
 
@@ -155,7 +155,7 @@ jobs:
         run: |
           cd nfc-reader-host/src/main/resources/macos
           sed -i '' "s/CHROME_EXTENSION_ID:-EXTENSION_ID_PLACEHOLDER/CHROME_EXTENSION_ID:-${{ env.CHROME_EXTENSION_ID }}/g" postinstall.sh
-          sed -i '' "s/FIREFOX_EXTENSION_ID:-nfc-reader@example.com/FIREFOX_EXTENSION_ID:-${{ env.FIREFOX_EXTENSION_ID }}/g" postinstall.sh
+          sed -i '' "s/FIREFOX_EXTENSION_ID:-nfc@nfcreader.info/FIREFOX_EXTENSION_ID:-${{ env.FIREFOX_EXTENSION_ID }}/g" postinstall.sh
 
       - name: Create custom JRE
         run: |
@@ -230,7 +230,7 @@ jobs:
         run: |
           cd nfc-reader-host/src/main/resources/windows
           (Get-Content postinstall.bat) -replace 'CHROME_EXTENSION_ID:-EXTENSION_ID_PLACEHOLDER', 'CHROME_EXTENSION_ID:-${{ env.CHROME_EXTENSION_ID }}' | Set-Content postinstall.bat
-          (Get-Content postinstall.bat) -replace 'FIREFOX_EXTENSION_ID:-nfc-reader@example.com', 'FIREFOX_EXTENSION_ID:-${{ env.FIREFOX_EXTENSION_ID }}' | Set-Content postinstall.bat
+          (Get-Content postinstall.bat) -replace 'FIREFOX_EXTENSION_ID:-nfc@nfcreader.info', 'FIREFOX_EXTENSION_ID:-${{ env.FIREFOX_EXTENSION_ID }}' | Set-Content postinstall.bat
 
       - name: Create custom JRE
         run: |

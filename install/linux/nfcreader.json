@@ -4,6 +4,6 @@
   "path": "/usr/local/bin/nfc-reader-host",
   "type": "stdio",
   "allowed_extensions": [
-    "nfc-reader@example.com"
+    "nfc@nfcreader.info"
   ]
 }
