@@ -11,7 +11,30 @@ on:
       - develop
 
 jobs:
+  # Check what changed
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      host: ${{ steps.filter.outputs.host }}
+      extension: ${{ steps.filter.outputs.extension }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check for changes
+        uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            host:
+              - 'nfc-reader-host/**'
+            extension:
+              - 'browser-extension/**'
+
+  # Native host jobs
   test:
+    needs: changes
+    if: needs.changes.outputs.host == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -43,7 +66,8 @@ jobs:
           path: nfc-reader-host/target/surefire-reports/
 
   build-linux:
-    needs: test
+    needs: [changes, test]
+    if: needs.changes.outputs.host == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -106,7 +130,8 @@ jobs:
           path: nfc-reader-host/target/jpackage/nfc-reader-host/
 
   build-macos:
-    needs: test
+    needs: [changes, test]
+    if: needs.changes.outputs.host == 'true'
     runs-on: macos-latest
     steps:
       - name: Checkout code
@@ -158,7 +183,8 @@ jobs:
           path: nfc-reader-host/target/jpackage/nfc-reader-host/
 
   build-windows:
-    needs: test
+    needs: [changes, test]
+    if: needs.changes.outputs.host == 'true'
     runs-on: windows-latest
     steps:
       - name: Checkout code
@@ -208,3 +234,47 @@ jobs:
         with:
           name: windows-build
           path: nfc-reader-host/target/jpackage/nfc-reader-host/
+
+  package-extension:
+    needs: changes
+    if: needs.changes.outputs.extension == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create Chrome/Edge extension package
+        run: |
+          cd browser-extension
+          zip -r nfc-reader-extension-chrome.zip \
+            manifest.json \
+            background/ \
+            content/ \
+            popup/ \
+            icons/ \
+            -x "*.md" "web-ext-artifacts/*"
+
+      - name: Create Firefox extension manifest
+        run: |
+          cd browser-extension
+          # Firefox uses different manifest structure, copy and modify if needed
+          # For now, using the same manifest
+          zip -r nfc-reader-extension-firefox.zip \
+            manifest.json \
+            background/ \
+            content/ \
+            popup/ \
+            icons/ \
+            -x "*.md" "web-ext-artifacts/*"
+
+      - name: Upload Chrome/Edge extension
+        uses: actions/upload-artifact@v4
+        with:
+          name: chrome-extension
+          path: browser-extension/nfc-reader-extension-chrome.zip
+
+      - name: Upload Firefox extension
+        uses: actions/upload-artifact@v4
+        with:
+          name: firefox-extension
+          path: browser-extension/nfc-reader-extension-firefox.zip
