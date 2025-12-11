@@ -13,6 +13,7 @@ let currentState = {
   isListening: false,
   lastUID: null,
   error: null,
+  notInstalled: false,
   uidFormat: 'plain'
 };
 
@@ -35,6 +36,7 @@ chrome.runtime.onInstalled.addListener(() => {
 nativeMessaging.on('connected', () => {
   console.log('Native host connected');
   currentState.error = null;
+  currentState.notInstalled = false;
   broadcastStateUpdate();
 });
 
@@ -46,7 +48,10 @@ nativeMessaging.on('disconnected', () => {
 
 nativeMessaging.on('error', (data) => {
   console.error('Native host error:', data.error);
+  console.log('Error data:', data);
   currentState.error = data.error;
+  currentState.notInstalled = data.notInstalled || false;
+  console.log('Current state after error:', currentState);
   currentState.isListening = false;
   broadcastStateUpdate();
 });

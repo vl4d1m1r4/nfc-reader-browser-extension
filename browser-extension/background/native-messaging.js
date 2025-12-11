@@ -12,6 +12,7 @@ class NativeMessaging {
     this.listeners = new Map();
     this.reconnectAttempts = 0;
     this.maxReconnectAttempts = 3;
+    this.hostNotInstalled = false;
   }
 
   /**
@@ -37,6 +38,7 @@ class NativeMessaging {
 
       this.isConnected = true;
       this.reconnectAttempts = 0;
+      this.hostNotInstalled = false;
       console.log('Connected to native host');
       
       this.emit('connected');
@@ -44,7 +46,11 @@ class NativeMessaging {
     } catch (error) {
       console.error('Failed to connect to native host:', error);
       this.isConnected = false;
-      this.emit('error', { error: 'Failed to connect to native host' });
+      this.hostNotInstalled = true;
+      this.emit('error', { 
+        error: 'Failed to connect to native host',
+        notInstalled: true 
+      });
     }
   }
 
@@ -65,7 +71,10 @@ class NativeMessaging {
   sendMessage(message) {
     if (!this.isConnected || !this.port) {
       console.error('Not connected to native host');
-      this.emit('error', { error: 'Not connected to native host. Please install the native host application.' });
+      this.emit('error', { 
+        error: 'Not connected to native host. Please install the native host application.',
+        notInstalled: this.hostNotInstalled 
+      });
       return;
     }
 
@@ -106,6 +115,7 @@ class NativeMessaging {
       if (error.message.includes('native messaging host') || 
           error.message.includes('not found') ||
           error.message.includes('Specified native messaging host not found')) {
+        this.hostNotInstalled = true;
         this.emit('error', { 
           error: 'Native messaging host not installed. Please install the host application first.',
           notInstalled: true
@@ -119,11 +129,13 @@ class NativeMessaging {
     this.port = null;
     this.emit('disconnected');
 
-    // Attempt to reconnect
-    if (this.reconnectAttempts < this.maxReconnectAttempts) {
+    // Only attempt to reconnect if host is installed but connection failed
+    if (!this.hostNotInstalled && this.reconnectAttempts < this.maxReconnectAttempts) {
       this.reconnectAttempts++;
       console.log(`Reconnect attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts}`);
       setTimeout(() => this.connect(), 2000);
+    } else if (this.hostNotInstalled) {
+      console.log('Host not installed, skipping reconnection attempts');
     }
   }
 

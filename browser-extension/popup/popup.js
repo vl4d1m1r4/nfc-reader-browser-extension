@@ -17,6 +17,7 @@ const statusIndicator = document.getElementById('statusIndicator');
 const statusText = document.getElementById('statusText');
 const errorSection = document.getElementById('errorSection');
 const errorMessage = document.getElementById('errorMessage');
+const installNotice = document.getElementById('installNotice');
 const readerSelect = document.getElementById('readerSelect');
 const refreshBtn = document.getElementById('refreshBtn');
 const toggleBtn = document.getElementById('toggleBtn');
@@ -30,6 +31,7 @@ const formatSelect = document.getElementById('formatSelect');
  */
 async function initialize() {
   console.log('Initializing popup');
+  console.log('Install notice element:', installNotice);
   
   // Load saved format preference
   chrome.storage.local.get(['uidFormat'], (result) => {
@@ -41,6 +43,7 @@ async function initialize() {
   
   // Get current state from background
   chrome.runtime.sendMessage({ action: 'get-state' }, (response) => {
+    console.log('Received state from background:', response);
     if (response && response.state) {
       updateState(response.state);
     }
@@ -104,16 +107,34 @@ function setupEventListeners() {
  * Updates the UI state
  */
 function updateState(state) {
+  console.log('Updating state:', state);
   currentState = state;
   
   // Update status indicator
   updateStatusIndicator();
   
-  // Update error display
+  // Update error display and install notice
   if (state.error) {
-    showError(state.error);
+    console.log('Error detected:', state.error, 'notInstalled:', state.notInstalled);
+    // Check if this is a "not installed" error
+    if (state.notInstalled) {
+      console.log('Showing install notice');
+      // Only show install notice, hide error
+      hideError();
+      showInstallNotice();
+      // Disable all controls when host is not installed
+      readerSelect.disabled = true;
+      refreshBtn.disabled = true;
+      toggleBtn.disabled = true;
+    } else {
+      console.log('Showing error message');
+      // Show error for other issues, hide install notice
+      showError(state.error);
+      hideInstallNotice();
+    }
   } else {
     hideError();
+    hideInstallNotice();
   }
   
   // Update reader list
@@ -199,6 +220,29 @@ function showError(error) {
  */
 function hideError() {
   errorSection.style.display = 'none';
+}
+
+/**
+ * Shows the installation notice
+ */
+function showInstallNotice() {
+  console.log('showInstallNotice called, setting display to flex');
+  if (installNotice) {
+    installNotice.style.display = 'flex';
+    console.log('Install notice display:', installNotice.style.display);
+  } else {
+    console.error('Install notice element not found!');
+  }
+}
+
+/**
+ * Hides the installation notice
+ */
+function hideInstallNotice() {
+  console.log('hideInstallNotice called');
+  if (installNotice) {
+    installNotice.style.display = 'none';
+  }
 }
 
 /**
