@@ -14,13 +14,10 @@
                   Execute="deferred"
                   Impersonate="yes"
                   Return="ignore" />
-  </Fragment>
-  
-  <Fragment>
-    <UI />
-    <InstallUISequence>
+    
+    <InstallExecuteSequence>
       <Custom Action="RunPostInstall" After="InstallFiles">NOT Installed</Custom>
       <Custom Action="RunPreRemove" Before="RemoveFiles">REMOVE~="ALL"</Custom>
-    </InstallUISequence>
+    </InstallExecuteSequence>
   </Fragment>
 </Wix>
