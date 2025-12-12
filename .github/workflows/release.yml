@@ -92,7 +92,7 @@ jobs:
             --linux-deb-maintainer "nfc@nfcreader.info" \
             --linux-app-category "Utility" \
             --app-content target/installer-scripts \
-            --resource-dir src/main/resources/linux
+            --resource-dir target/installer-scripts
 
       - name: Create RPM package
         run: |
@@ -115,7 +115,7 @@ jobs:
             --linux-rpm-license-type "MIT" \
             --linux-app-category "Utility" \
             --app-content target/installer-scripts \
-            --resource-dir src/main/resources/linux
+            --resource-dir target/installer-scripts
 
       - name: Create tarball
         run: |

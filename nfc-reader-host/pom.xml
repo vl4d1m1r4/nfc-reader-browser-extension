@@ -119,39 +119,6 @@
                 <version>3.3.1</version>
                 <executions>
                     <execution>
-                        <id>copy-manifest-templates</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.outputDirectory}</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>${project.basedir}/../install/linux</directory>
-                                    <includes>
-                                        <include>info.nfcreader.host.json</include>
-                                    </includes>
-                                    <targetPath>linux</targetPath>
-                                </resource>
-                                <resource>
-                                    <directory>${project.basedir}/../install/macos</directory>
-                                    <includes>
-                                        <include>info.nfcreader.host.json</include>
-                                    </includes>
-                                    <targetPath>macos</targetPath>
-                                </resource>
-                                <resource>
-                                    <directory>${project.basedir}/../install/windows</directory>
-                                    <includes>
-                                        <include>info.nfcreader.host.json</include>
-                                    </includes>
-                                    <targetPath>windows</targetPath>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                    <execution>
                         <id>copy-installer-scripts</id>
                         <phase>prepare-package</phase>
                         <goals>
@@ -184,6 +151,25 @@
                                     <includes>
                                         <include>postinstall.bat</include>
                                         <include>preremove.bat</include>
+                                        <include>overrides.wxi</include>
+                                    </includes>
+                                </resource>
+                                <resource>
+                                    <directory>${project.basedir}/../install/linux</directory>
+                                    <includes>
+                                        <include>info.nfcreader.host.json</include>
+                                    </includes>
+                                </resource>
+                                <resource>
+                                    <directory>${project.basedir}/../install/macos</directory>
+                                    <includes>
+                                        <include>info.nfcreader.host.json</include>
+                                    </includes>
+                                </resource>
+                                <resource>
+                                    <directory>${project.basedir}/../install/windows</directory>
+                                    <includes>
+                                        <include>info.nfcreader.host.json</include>
                                     </includes>
                                 </resource>
                             </resources>
