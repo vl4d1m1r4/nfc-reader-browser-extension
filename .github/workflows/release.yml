@@ -4,23 +4,22 @@ on:
   push:
     tags:
       - "v*"
-  workflow_dispatch:
-    inputs:
-      chrome_extension_id:
-        description: "Chrome/Edge Extension ID"
-        required: false
-        default: "EXTENSION_ID_PLACEHOLDER"
-      firefox_extension_id:
-        description: "Firefox Extension ID"
-        required: false
-        default: "nfc@nfcreader.info"
-
-env:
-  CHROME_EXTENSION_ID: ${{ github.event.inputs.chrome_extension_id || 'EXTENSION_ID_PLACEHOLDER' }}
-  FIREFOX_EXTENSION_ID: ${{ github.event.inputs.firefox_extension_id || 'nfc@nfcreader.info' }}
 
 jobs:
+  extract-version:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.get_version.outputs.version }}
+    steps:
+      - name: Extract version from tag
+        id: get_version
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Building version: $VERSION"
+
   build-linux:
+    needs: extract-version
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -39,38 +38,10 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y pcscd libpcsclite-dev rpm
 
-      - name: Extract version from tag
-        id: get_version
-        run: |
-          if [[ "${{ github.ref }}" == refs/tags/* ]]; then
-            VERSION=${GITHUB_REF#refs/tags/v}
-          else
-            VERSION="1.0.0"
-          fi
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "Building version: $VERSION"
-
-      - name: Update Maven version
-        run: |
-          cd nfc-reader-host
-          mvn versions:set -DnewVersion=${{ steps.get_version.outputs.version }} -DgenerateBackupPoms=false
-
       - name: Build with Maven
         run: |
           cd nfc-reader-host
           mvn clean package
-
-      - name: Update browser extension version
-        run: |
-          cd browser-extension
-          VERSION=${{ steps.get_version.outputs.version }}
-          sed -i "s/\"version\": \"[^\"]*\"/\"version\": \"$VERSION\"/" manifest.json
-
-      - name: Configure extension IDs in scripts
-        run: |
-          cd nfc-reader-host/src/main/resources/linux
-          sed -i "s/CHROME_EXTENSION_ID:-EXTENSION_ID_PLACEHOLDER/CHROME_EXTENSION_ID:-${{ env.CHROME_EXTENSION_ID }}/g" postinstall.sh
-          sed -i "s/FIREFOX_EXTENSION_ID:-nfc@nfcreader.info/FIREFOX_EXTENSION_ID:-${{ env.FIREFOX_EXTENSION_ID }}/g" postinstall.sh
 
       - name: Create custom JRE
         run: |
@@ -111,7 +82,7 @@ jobs:
             --type deb \
             --runtime-image target/custom-jre \
             --dest target/installers \
-            --app-version ${{ steps.get_version.outputs.version }} \
+            --app-version ${{ needs.extract-version.outputs.version }} \
             --vendor "NFC Reader" \
             --description "Native messaging host for NFC card reader browser extension" \
             --linux-shortcut \
@@ -131,7 +102,7 @@ jobs:
             --type rpm \
             --runtime-image target/custom-jre \
             --dest target/installers \
-            --app-version ${{ steps.get_version.outputs.version }} \
+            --app-version ${{ needs.extract-version.outputs.version }} \
             --vendor "NFC Reader" \
             --description "Native messaging host for NFC card reader browser extension" \
             --linux-shortcut \
@@ -149,7 +120,7 @@ jobs:
         run: |
           mkdir -p nfc-reader-host/target/installers
           cd browser-extension
-          zip -r ../nfc-reader-host/target/installers/nfc-reader-browser-extension-${{ steps.get_version.outputs.version }}.zip \
+          zip -r ../nfc-reader-host/target/installers/nfc-reader-browser-extension-${{ needs.extract-version.outputs.version }}.zip \
             manifest.json \
             background/ \
             content/ \
@@ -173,6 +144,7 @@ jobs:
           path: nfc-reader-host/target/installers/nfc-reader-browser-extension-*.zip
 
   build-macos:
+    needs: extract-version
     runs-on: macos-latest
     steps:
       - name: Checkout code
@@ -186,38 +158,10 @@ jobs:
           cache: maven
           cache-dependency-path: "nfc-reader-host/pom.xml"
 
-      - name: Extract version from tag
-        id: get_version
-        run: |
-          if [[ "${{ github.ref }}" == refs/tags/* ]]; then
-            VERSION=${GITHUB_REF#refs/tags/v}
-          else
-            VERSION="1.0.0"
-          fi
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "Building version: $VERSION"
-
-      - name: Update Maven version
-        run: |
-          cd nfc-reader-host
-          mvn versions:set -DnewVersion=${{ steps.get_version.outputs.version }} -DgenerateBackupPoms=false
-
       - name: Build with Maven
         run: |
           cd nfc-reader-host
           mvn clean package
-
-      - name: Update browser extension version
-        run: |
-          cd browser-extension
-          VERSION=${{ steps.get_version.outputs.version }}
-          sed -i '' "s/\"version\": \"[^\"]*\"/\"version\": \"$VERSION\"/" manifest.json
-
-      - name: Configure extension IDs in scripts
-        run: |
-          cd nfc-reader-host/src/main/resources/macos
-          sed -i '' "s/CHROME_EXTENSION_ID:-EXTENSION_ID_PLACEHOLDER/CHROME_EXTENSION_ID:-${{ env.CHROME_EXTENSION_ID }}/g" postinstall.sh
-          sed -i '' "s/FIREFOX_EXTENSION_ID:-nfc@nfcreader.info/FIREFOX_EXTENSION_ID:-${{ env.FIREFOX_EXTENSION_ID }}/g" postinstall.sh
 
       - name: Create custom JRE
         run: |
@@ -258,7 +202,7 @@ jobs:
             --type dmg \
             --runtime-image target/custom-jre \
             --dest target/installers \
-            --app-version ${{ steps.get_version.outputs.version }} \
+            --app-version ${{ needs.extract-version.outputs.version }} \
             --vendor "NFC Reader" \
             --description "Native messaging host for NFC card reader browser extension" \
             --resource-dir src/main/resources/macos
@@ -270,6 +214,7 @@ jobs:
           path: nfc-reader-host/target/installers/*.dmg
 
   build-windows:
+    needs: extract-version
     runs-on: windows-latest
     steps:
       - name: Checkout code
@@ -283,38 +228,10 @@ jobs:
           cache: maven
           cache-dependency-path: "nfc-reader-host/pom.xml"
 
-      - name: Extract version from tag
-        id: get_version
-        run: |
-          if ("${{ github.ref }}" -like "refs/tags/*") {
-            $version = "${{ github.ref }}" -replace '^refs/tags/v', ''
-          } else {
-            $version = "1.0.0"
-          }
-          echo "version=$version" >> $env:GITHUB_OUTPUT
-          echo "Building version: $version"
-
-      - name: Update Maven version
-        run: |
-          cd nfc-reader-host
-          mvn versions:set -DnewVersion=${{ steps.get_version.outputs.version }} -DgenerateBackupPoms=false
-
       - name: Build with Maven
         run: |
           cd nfc-reader-host
           mvn clean package
-
-      - name: Update browser extension version
-        run: |
-          cd browser-extension
-          $version = "${{ steps.get_version.outputs.version }}"
-          (Get-Content manifest.json) -replace '"version": "[^"]*"', "\"version\": \"$version\"" | Set-Content manifest.json
-
-      - name: Configure extension IDs in scripts
-        run: |
-          cd nfc-reader-host/src/main/resources/windows
-          (Get-Content postinstall.bat) -replace 'CHROME_EXTENSION_ID:-EXTENSION_ID_PLACEHOLDER', 'CHROME_EXTENSION_ID:-${{ env.CHROME_EXTENSION_ID }}' | Set-Content postinstall.bat
-          (Get-Content postinstall.bat) -replace 'FIREFOX_EXTENSION_ID:-nfc@nfcreader.info', 'FIREFOX_EXTENSION_ID:-${{ env.FIREFOX_EXTENSION_ID }}' | Set-Content postinstall.bat
 
       - name: Create custom JRE
         run: |
@@ -354,7 +271,7 @@ jobs:
             --type msi `
             --runtime-image target/custom-jre `
             --dest target/installers `
-            --app-version ${{ steps.get_version.outputs.version }} `
+            --app-version ${{ needs.extract-version.outputs.version }} `
             --vendor "NFC Reader" `
             --description "Native messaging host for NFC card reader browser extension" `
             --win-dir-chooser `
@@ -373,7 +290,7 @@ jobs:
             --type exe `
             --runtime-image target/custom-jre `
             --dest target/installers `
-            --app-version ${{ steps.get_version.outputs.version }} `
+            --app-version ${{ needs.extract-version.outputs.version }} `
             --vendor "NFC Reader" `
             --description "Native messaging host for NFC card reader browser extension" `
             --win-dir-chooser `
@@ -410,62 +327,3 @@ jobs:
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  prepare-next-development:
-    needs: create-release
-    runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/')
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Set up JDK 23
-        uses: actions/setup-java@v4
-        with:
-          java-version: "23"
-          distribution: "temurin"
-
-      - name: Calculate next development version
-        id: next_version
-        run: |
-          # Extract current version from tag
-          CURRENT_VERSION=${GITHUB_REF#refs/tags/v}
-          echo "Current version: $CURRENT_VERSION"
-
-          # Split version into parts
-          IFS='.' read -ra VERSION_PARTS <<< "$CURRENT_VERSION"
-          MAJOR=${VERSION_PARTS[0]}
-          MINOR=${VERSION_PARTS[1]}
-          PATCH=${VERSION_PARTS[2]}
-
-          # Increment patch version
-          NEXT_PATCH=$((PATCH + 1))
-          NEXT_VERSION="${MAJOR}.${MINOR}.${NEXT_PATCH}-SNAPSHOT"
-
-          echo "Next development version: $NEXT_VERSION"
-          echo "version=$NEXT_VERSION" >> $GITHUB_OUTPUT
-
-      - name: Update Maven version
-        run: |
-          cd nfc-reader-host
-          mvn versions:set -DnewVersion=${{ steps.next_version.outputs.version }} -DgenerateBackupPoms=false
-
-      - name: Update browser extension version
-        run: |
-          cd browser-extension
-          VERSION=${{ steps.next_version.outputs.version }}
-          sed -i "s/\"version\": \"[^\"]*\"/\"version\": \"$VERSION\"/" manifest.json
-
-      - name: Configure Git
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-
-      - name: Commit and push changes
-        run: |
-          git add nfc-reader-host/pom.xml browser-extension/manifest.json
-          git commit -m "Prepare next development version ${{ steps.next_version.outputs.version }}"
-          git push origin HEAD:main
