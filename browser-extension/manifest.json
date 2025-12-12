@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "NFC Reader",
-  "version": "0.0.6",
+  "version": "0.0.7-SNAPSHOT",
   "description": "Read NFC-A cards from USB reader and auto-fill input fields",
 
   "browser_specific_settings": {
