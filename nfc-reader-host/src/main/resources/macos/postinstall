@@ -1,0 +1,6 @@
+#!/bin/bash
+# macOS postinstall wrapper - calls the actual postinstall script
+# This file is used by jpackage for PKG/DMG installers
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+exec "${SCRIPT_DIR}/postinstall.sh" "$@"

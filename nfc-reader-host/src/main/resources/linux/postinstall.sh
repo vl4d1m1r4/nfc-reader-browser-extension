@@ -7,10 +7,7 @@ set -e
 INSTALL_ROOT="$1"
 APP_DIR="${INSTALL_ROOT}/opt/nfc-reader-host"
 BINARY_PATH="${APP_DIR}/bin/nfc-reader-host"
-
-# Get extension IDs from environment or use defaults
-CHROME_EXT_ID="${CHROME_EXTENSION_ID:-EXTENSION_ID_PLACEHOLDER}"
-FIREFOX_EXT_ID="${FIREFOX_EXTENSION_ID:-nfc@nfcreader.info}"
+RESOURCE_DIR="${APP_DIR}/lib/app"
 
 # Install native messaging manifests for all users
 install_manifests() {
@@ -25,34 +22,21 @@ install_manifests() {
     # Create directories
     mkdir -p "$CHROME_DIR" "$CHROMIUM_DIR" "$EDGE_DIR" "$FIREFOX_DIR"
     
-    # Chrome/Chromium manifest
-    cat > "$CHROME_DIR/info.nfcreader.host.json" << EOF
-{
-  "name": "info.nfcreader.host",
-  "description": "NFC Reader Native Messaging Host",
-  "path": "${BINARY_PATH}",
-  "type": "stdio",
-  "allowed_origins": [
-    "chrome-extension://${CHROME_EXT_ID}/"
-  ]
-}
-EOF
+    # Copy Chrome manifest template and update path
+    if [ -f "${RESOURCE_DIR}/info.nfcreader.host.json" ]; then
+        sed "s|/usr/local/bin/nfc-reader-host|${BINARY_PATH}|g" "${RESOURCE_DIR}/info.nfcreader.host.json" > "$CHROME_DIR/info.nfcreader.host.json"
+        cp "$CHROME_DIR/info.nfcreader.host.json" "$CHROMIUM_DIR/"
+        cp "$CHROME_DIR/info.nfcreader.host.json" "$EDGE_DIR/"
+    else
+        echo "Warning: Manifest template not found at ${RESOURCE_DIR}/info.nfcreader.host.json"
+        return 1
+    fi
     
-    cp "$CHROME_DIR/info.nfcreader.host.json" "$CHROMIUM_DIR/"
-    cp "$CHROME_DIR/info.nfcreader.host.json" "$EDGE_DIR/"
-    
-    # Firefox manifest (uses allowed_extensions instead of allowed_origins)
-    cat > "$FIREFOX_DIR/info.nfcreader.host.json" << EOF
-{
-  "name": "info.nfcreader.host",
-  "description": "NFC Reader Native Messaging Host",
-  "path": "${BINARY_PATH}",
-  "type": "stdio",
-  "allowed_extensions": [
-    "${FIREFOX_EXT_ID}"
-  ]
-}
-EOF
+    # Create Firefox manifest (convert allowed_origins to allowed_extensions)
+    sed -e "s|/usr/local/bin/nfc-reader-host|${BINARY_PATH}|g" \
+        -e 's/"allowed_origins"/"allowed_extensions"/g' \
+        -e 's|chrome-extension://\([^/]*\)/|\1|g' \
+        "${RESOURCE_DIR}/info.nfcreader.host.json" > "$FIREFOX_DIR/info.nfcreader.host.json"
     
     # Set permissions
     chmod 644 "$CHROME_DIR/info.nfcreader.host.json"
@@ -70,11 +54,5 @@ chmod +x "$BINARY_PATH" 2>/dev/null || true
 install_manifests
 
 echo "NFC Reader Host installation completed"
-echo ""
-echo "IMPORTANT: Update the extension ID in the manifest files:"
-echo "  - Chrome/Edge: $CHROME_DIR/info.nfcreader.host.json"
-echo "  - Firefox: $FIREFOX_DIR/info.nfcreader.host.json"
-echo ""
-echo "Replace EXTENSION_ID_PLACEHOLDER with your actual extension ID."
 
 exit 0
