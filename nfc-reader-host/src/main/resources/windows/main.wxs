@@ -8,7 +8,16 @@
                 Impersonate="yes"
                 Return="ignore" />
   
+  <!-- Custom action to run preremove script before uninstallation -->
+  <CustomAction Id="RunPreRemove"
+                Directory="INSTALLDIR"
+                ExeCommand="cmd.exe /c &quot;[INSTALLDIR]app\preremove.bat&quot;"
+                Execute="deferred"
+                Impersonate="yes"
+                Return="ignore" />
+  
   <InstallExecuteSequence>
     <Custom Action="RunPostInstall" After="InstallFiles">NOT Installed AND NOT REMOVE</Custom>
+    <Custom Action="RunPreRemove" Before="RemoveFiles">REMOVE~="ALL"</Custom>
   </InstallExecuteSequence>
 </Include>

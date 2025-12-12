@@ -79,6 +79,7 @@ jobs:
           chmod +x src/main/resources/linux/postinstall.sh
           chmod +x src/main/resources/linux/postinst
           chmod +x src/main/resources/linux/preremove.sh
+          chmod +x src/main/resources/linux/prerm
           jpackage \
             --input target/jpackage-input \
             --name nfc-reader-host \
@@ -100,6 +101,7 @@ jobs:
         run: |
           cd nfc-reader-host
           chmod +x src/main/resources/linux/postinstall
+          chmod +x src/main/resources/linux/preremove
           jpackage \
             --input target/jpackage-input \
             --name nfc-reader-host \

@@ -1,0 +1,6 @@
+#!/bin/bash
+# RPM preremove wrapper - calls the actual preremove script
+# This file is used by jpackage for RPM packages
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+exec "${SCRIPT_DIR}/preremove.sh" "$@"
