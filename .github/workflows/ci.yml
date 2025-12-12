@@ -255,20 +255,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Package browser extension
-        run: |
-          mkdir -p browser-extension/dist
-          cd browser-extension
-          zip -r dist/nfc-reader-browser-extension.zip \
-            manifest.json \
-            background/ \
-            content/ \
-            popup/ \
-            icons/ \
-            -x "*/README.md" "*/.git*"
-
       - name: Upload browser extension
         uses: actions/upload-artifact@v4
         with:
           name: browser-extension
-          path: browser-extension/dist/nfc-reader-browser-extension.zip
+          path: |
+            browser-extension/manifest.json
+            browser-extension/background/
+            browser-extension/content/
+            browser-extension/popup/
+            browser-extension/icons/
