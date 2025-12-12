@@ -8,6 +8,7 @@ set INSTALL_DIR=%~1
 if "%INSTALL_DIR%"=="" set INSTALL_DIR=C:\Program Files\NFC Reader Host
 
 set BINARY_PATH=%INSTALL_DIR%\nfc-reader-host.exe
+set MANIFEST_DIR=%LOCALAPPDATA%\NFCReader
 
 REM Get extension IDs from environment or use defaults
 if "%CHROME_EXTENSION_ID%"=="" (
@@ -24,19 +25,17 @@ if "%FIREFOX_EXTENSION_ID%"=="" (
 
 echo Installing native messaging manifests...
 
-REM Chrome/Edge manifest path (system-wide)
-set CHROME_KEY=HKEY_LOCAL_MACHINE\SOFTWARE\Google\Chrome\NativeMessagingHosts\info.nfcreader.host
-set EDGE_KEY=HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Edge\NativeMessagingHosts\info.nfcreader.host
+REM Chrome/Edge manifest path (per-user)
+set CHROME_KEY=HKEY_CURRENT_USER\SOFTWARE\Google\Chrome\NativeMessagingHosts\info.nfcreader.host
+set EDGE_KEY=HKEY_CURRENT_USER\SOFTWARE\Microsoft\Edge\NativeMessagingHosts\info.nfcreader.host
 
-REM Firefox manifest path (system-wide)
-set FIREFOX_DIR=C:\ProgramData\Mozilla\NativeMessagingHosts
-set FIREFOX_MANIFEST=%FIREFOX_DIR%\info.nfcreader.host.json
+REM Firefox manifest path (per-user)
+set FIREFOX_DIR=%APPDATA%\Mozilla\NativeMessagingHosts
 
-REM Create Chrome manifest JSON
-set CHROME_MANIFEST_DIR=%INSTALL_DIR%\chrome-manifest
-if not exist "%CHROME_MANIFEST_DIR%" mkdir "%CHROME_MANIFEST_DIR%"
+REM Create manifest directory
+if not exist "!MANIFEST_DIR!" mkdir "!MANIFEST_DIR!"
 
-set MANIFEST_FILE=%CHROME_MANIFEST_DIR%\info.nfcreader.host.json
+set MANIFEST_FILE=!MANIFEST_DIR!\info.nfcreader.host.json
 
 REM Write Chrome/Edge manifest
 (
@@ -49,10 +48,10 @@ echo   "allowed_origins": [
 echo     "chrome-extension://%CHROME_EXT_ID%/"
 echo   ]
 echo }
-) > "%MANIFEST_FILE%"
+) > "!MANIFEST_FILE!"
 
 REM Register Chrome manifest
-reg add "%CHROME_KEY%" /ve /t REG_SZ /d "%MANIFEST_FILE%" /f >nul 2>&1
+reg add "%CHROME_KEY%" /ve /t REG_SZ /d "!MANIFEST_FILE!" /f >nul 2>&1
 if %errorLevel% EQU 0 (
     echo [OK] Chrome manifest registered
 ) else (
@@ -60,7 +59,7 @@ if %errorLevel% EQU 0 (
 )
 
 REM Register Edge manifest
-reg add "%EDGE_KEY%" /ve /t REG_SZ /d "%MANIFEST_FILE%" /f >nul 2>&1
+reg add "%EDGE_KEY%" /ve /t REG_SZ /d "!MANIFEST_FILE!" /f >nul 2>&1
 if %errorLevel% EQU 0 (
     echo [OK] Edge manifest registered
 ) else (
@@ -68,7 +67,9 @@ if %errorLevel% EQU 0 (
 )
 
 REM Create Firefox manifest directory
-if not exist "%FIREFOX_DIR%" mkdir "%FIREFOX_DIR%"
+if not exist "!FIREFOX_DIR!" mkdir "!FIREFOX_DIR!"
+
+set FIREFOX_MANIFEST=!FIREFOX_DIR!\info.nfcreader.host.json
 
 REM Write Firefox manifest
 (
@@ -81,9 +82,9 @@ echo   "allowed_extensions": [
 echo     "%FIREFOX_EXT_ID%"
 echo   ]
 echo }
-) > "%FIREFOX_MANIFEST%"
+) > "!FIREFOX_MANIFEST!"
 
-if exist "%FIREFOX_MANIFEST%" (
+if exist "!FIREFOX_MANIFEST!" (
     echo [OK] Firefox manifest created
 ) else (
     echo [WARNING] Failed to create Firefox manifest
@@ -92,10 +93,12 @@ if exist "%FIREFOX_MANIFEST%" (
 echo.
 echo Native messaging manifests installed successfully
 echo.
-echo IMPORTANT: Update the extension ID in:
-echo   - Chrome/Edge: %MANIFEST_FILE%
-echo   - Firefox: %FIREFOX_MANIFEST%
+echo Manifest locations:
+echo   - Chrome/Edge: !MANIFEST_FILE!
+echo   - Firefox: !FIREFOX_MANIFEST!
 echo.
-echo Replace EXTENSION_ID_PLACEHOLDER with your actual extension ID.
+echo IMPORTANT: Update the extension ID if needed by editing the manifest files.
+
+exit /b 0
 
 exit /b 0

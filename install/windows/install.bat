@@ -1,4 +1,5 @@
 @echo off
+setlocal enabledelayedexpansion
 REM NFC Reader Host - Windows Installation Script
 REM This script installs the native messaging host for Chrome, Edge, and Firefox
 REM Run as Administrator
@@ -17,33 +18,40 @@ if %errorLevel% NEQ 0 (
 )
 
 REM Variables
+set JPACKAGE_DIR=nfc-reader-host
 set INSTALL_DIR=C:\Program Files\NFCReader
+set MANIFEST_DIR=%LOCALAPPDATA%\NFCReader
 set BINARY_NAME=nfc-reader-host.exe
 set BINARY_PATH=%INSTALL_DIR%\%BINARY_NAME%
 
-REM Check if binary exists
-if not exist "..\..\nfc-reader-host\target\%BINARY_NAME%" (
-    echo Error: Native host binary not found!
-    echo Please build the native image first using GraalVM on Windows.
+REM Check if jpackage app exists
+if not exist "..\..\nfc-reader-host\target\jpackage\%JPACKAGE_DIR%" (
+    echo Error: jpackage application not found!
+    echo Please build the project first:
+    echo   cd ../.. ^&^& build.sh
     pause
     exit /b 1
 )
 
-echo Step 1: Installing binary to %INSTALL_DIR%
+echo Step 1: Installing self-contained application to %INSTALL_DIR%
 echo.
 
-REM Create installation directory
-if not exist "%INSTALL_DIR%" mkdir "%INSTALL_DIR%"
+REM Remove old installation if exists
+if exist "%INSTALL_DIR%" (
+    echo Removing previous installation...
+    rd /s /q "%INSTALL_DIR%"
+)
 
-REM Copy binary
-copy /Y "..\..\nfc-reader-host\target\%BINARY_NAME%" "%BINARY_PATH%" >nul
+REM Create installation directory and copy entire jpackage directory
+mkdir "%INSTALL_DIR%"
+xcopy /E /I /Y "..\..\nfc-reader-host\target\jpackage\%JPACKAGE_DIR%\*" "%INSTALL_DIR%" >nul
 if %errorLevel% NEQ 0 (
-    echo Error: Failed to copy binary
+    echo Error: Failed to copy application files
     pause
     exit /b 1
 )
 
-echo [OK] Binary installed to %BINARY_PATH%
+echo [OK] Self-contained application installed to %INSTALL_DIR%
 echo.
 
 REM Get extension ID
@@ -57,11 +65,14 @@ if not "%EXTENSION_ID%"=="" (
     echo Installing Chrome/Edge manifests...
     echo.
     
-    REM Create Chrome manifest with extension ID
-    powershell -Command "(Get-Content 'info.nfcreader.host.json') -replace 'EXTENSION_ID_PLACEHOLDER', '%EXTENSION_ID%' | Set-Content '%TEMP%\info.nfcreader.host.json'"
+    REM Create manifest directory
+    if not exist "!MANIFEST_DIR!" mkdir "!MANIFEST_DIR!"
+    
+    REM Create Chrome manifest with extension ID and correct binary path
+    powershell -Command "(Get-Content 'info.nfcreader.host.json') -replace 'EXTENSION_ID_PLACEHOLDER', '%EXTENSION_ID%' -replace 'C:/Program Files/NFCReader/nfc-reader-host.exe', '%BINARY_PATH:\=/%' | Set-Content '!MANIFEST_DIR!\info.nfcreader.host.json'"
     
     REM Chrome registry
-    reg add "HKEY_CURRENT_USER\Software\Google\Chrome\NativeMessagingHosts\info.nfcreader.host" /ve /t REG_SZ /d "%TEMP%\info.nfcreader.host.json" /f >nul 2>&1
+    reg add "HKEY_CURRENT_USER\Software\Google\Chrome\NativeMessagingHosts\info.nfcreader.host" /ve /t REG_SZ /d "!MANIFEST_DIR!\info.nfcreader.host.json" /f >nul 2>&1
     if %errorLevel% EQU 0 (
         echo [OK] Chrome manifest registered
     ) else (
@@ -69,7 +80,7 @@ if not "%EXTENSION_ID%"=="" (
     )
     
     REM Edge registry
-    reg add "HKEY_CURRENT_USER\Software\Microsoft\Edge\NativeMessagingHosts\info.nfcreader.host" /ve /t REG_SZ /d "%TEMP%\info.nfcreader.host.json" /f >nul 2>&1
+    reg add "HKEY_CURRENT_USER\Software\Microsoft\Edge\NativeMessagingHosts\info.nfcreader.host" /ve /t REG_SZ /d "!MANIFEST_DIR!\info.nfcreader.host.json" /f >nul 2>&1
     if %errorLevel% EQU 0 (
         echo [OK] Edge manifest registered
     ) else (
@@ -90,7 +101,8 @@ if /i "%INSTALL_FIREFOX%"=="y" (
     
     if not exist "!FIREFOX_DIR!" mkdir "!FIREFOX_DIR!"
     
-    copy /Y "nfcreader.json" "!FIREFOX_DIR!\nfcreader.json" >nul
+    REM Update Firefox manifest with correct binary path
+    powershell -Command "(Get-Content 'nfcreader.json') -replace 'C:/Program Files/NFCReader/nfc-reader-host.exe', '%BINARY_PATH:\=/%' | Set-Content '!FIREFOX_DIR!\info.nfcreader.host.json'"
     if %errorLevel% EQU 0 (
         echo [OK] Firefox manifest installed
     ) else (

@@ -11,9 +11,11 @@ echo ""
 
 # Variables
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+APP_NAME="nfc-reader-host.app"
 BINARY_NAME="nfc-reader-host"
-INSTALL_DIR="/usr/local/bin"
-BINARY_PATH="$INSTALL_DIR/$BINARY_NAME"
+INSTALL_DIR="/Applications"
+APP_PATH="$INSTALL_DIR/$APP_NAME"
+BINARY_PATH="$APP_PATH/Contents/MacOS/$BINARY_NAME"
 
 # Chrome/Edge paths
 CHROME_DIR="$HOME/Library/Application Support/Google/Chrome/NativeMessagingHosts"
@@ -22,28 +24,26 @@ EDGE_DIR="$HOME/Library/Application Support/Microsoft Edge/NativeMessagingHosts"
 # Firefox path
 FIREFOX_DIR="$HOME/Library/Application Support/Mozilla/NativeMessagingHosts"
 
-# Check if binary exists
-if [ ! -f "$SCRIPT_DIR/../../nfc-reader-host/target/$BINARY_NAME" ]; then
-    echo "Error: Native host binary not found!"
-    echo "Please build the native image first:"
-    echo "  cd ../nfc-reader-host"
-    echo "  mvn clean package -Pnative"
+# Check if jpackage app bundle exists
+if [ ! -d "$SCRIPT_DIR/../../nfc-reader-host/target/jpackage/$APP_NAME" ]; then
+    echo "Error: jpackage application bundle not found!"
+    echo "Please build the project first:"
+    echo "  cd ../.. && ./build.sh"
     exit 1
 fi
 
-echo "Step 1: Installing binary to $INSTALL_DIR"
+echo "Step 1: Installing app bundle to $INSTALL_DIR"
 
-# Create /usr/local/bin if it doesn't exist
-if [ ! -d "$INSTALL_DIR" ]; then
-    echo "Creating $INSTALL_DIR..."
-    sudo mkdir -p "$INSTALL_DIR"
+# Remove old installation if exists
+if [ -d "$APP_PATH" ]; then
+    echo "Removing previous installation..."
+    sudo rm -rf "$APP_PATH"
 fi
 
-# Copy binary to /usr/local/bin
-sudo cp "$SCRIPT_DIR/../../nfc-reader-host/target/$BINARY_NAME" "$BINARY_PATH"
-sudo chmod +x "$BINARY_PATH"
+# Copy entire app bundle to /Applications
+sudo cp -R "$SCRIPT_DIR/../../nfc-reader-host/target/jpackage/$APP_NAME" "$APP_PATH"
 
-echo "✓ Binary installed to $BINARY_PATH"
+echo "✓ Self-contained app bundle installed to $APP_PATH"
 echo ""
 
 # Note about code signing
@@ -60,17 +60,19 @@ echo ""
 read -p "Enter Chrome/Edge extension ID (or press Enter to skip): " EXTENSION_ID
 
 if [ -n "$EXTENSION_ID" ]; then
-    # Create Chrome manifest
+    # Create Chrome manifest with correct binary path
     echo "Installing Chrome/Edge manifests..."
     
     # Chrome
     mkdir -p "$CHROME_DIR"
-    sed "s/EXTENSION_ID_PLACEHOLDER/$EXTENSION_ID/g" "$SCRIPT_DIR/info.nfcreader.host.json" > "$CHROME_DIR/info.nfcreader.host.json"
+    sed "s|EXTENSION_ID_PLACEHOLDER|$EXTENSION_ID|g" "$SCRIPT_DIR/info.nfcreader.host.json" | \
+        sed "s|/usr/local/bin/nfc-reader-host|$BINARY_PATH|g" > "$CHROME_DIR/info.nfcreader.host.json"
     echo "✓ Chrome manifest installed"
     
     # Edge
     mkdir -p "$EDGE_DIR"
-    sed "s/EXTENSION_ID_PLACEHOLDER/$EXTENSION_ID/g" "$SCRIPT_DIR/info.nfcreader.host.json" > "$EDGE_DIR/info.nfcreader.host.json"
+    sed "s|EXTENSION_ID_PLACEHOLDER|$EXTENSION_ID|g" "$SCRIPT_DIR/info.nfcreader.host.json" | \
+        sed "s|/usr/local/bin/nfc-reader-host|$BINARY_PATH|g" > "$EDGE_DIR/info.nfcreader.host.json"
     echo "✓ Edge manifest installed"
 else
     echo "Skipping Chrome/Edge installation"
@@ -84,7 +86,7 @@ read -p "Install for Firefox? (y/n): " INSTALL_FIREFOX
 
 if [ "$INSTALL_FIREFOX" = "y" ] || [ "$INSTALL_FIREFOX" = "Y" ]; then
     mkdir -p "$FIREFOX_DIR"
-    cp "$SCRIPT_DIR/nfcreader.json" "$FIREFOX_DIR/nfcreader.json"
+    sed "s|/usr/local/bin/nfc-reader-host|$BINARY_PATH|g" "$SCRIPT_DIR/nfcreader.json" > "$FIREFOX_DIR/info.nfcreader.host.json"
     echo "✓ Firefox manifest installed"
 fi
 
@@ -94,7 +96,8 @@ echo "Installation Complete!"
 echo "====================================="
 echo ""
 echo "Installed locations:"
-echo "  Binary: $BINARY_PATH"
+echo "  App Bundle: $APP_PATH"
+echo "  Executable: $BINARY_PATH"
 if [ -n "$EXTENSION_ID" ]; then
     echo "  Chrome: $CHROME_DIR/info.nfcreader.host.json"
     echo "  Edge: $EDGE_DIR/info.nfcreader.host.json"
@@ -115,5 +118,5 @@ echo "  3. Allow the binary in System Preferences if prompted"
 echo "  4. Test the NFC reader functionality"
 echo ""
 echo "To verify installation:"
-echo "  $BINARY_NAME list-readers"
+echo "  \"$BINARY_PATH\" list-readers"
 echo ""
