@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <!-- Custom action to run postinstall script after installation -->
+    <CustomAction Id="RunPostInstall"
+        ExeCommand="cmd.exe /c &quot;[INSTALLDIR]app\postinstall.bat&quot; &quot;[INSTALLDIR]&quot;"
+        Execute="deferred"
+        Impersonate="yes"
+        Return="ignore" />
+
+    <!-- Custom action to run preremove script before uninstallation -->
+    <CustomAction Id="RunPreRemove"
+        ExeCommand="cmd.exe /c &quot;[INSTALLDIR]app\preremove.bat&quot;"
+        Execute="deferred"
+        Impersonate="yes"
+        Return="ignore" />
+    <?ifdef JpInstallSequence?>
+    <InstallExecuteSequence>
+        <Custom Action="RunPostInstall" After="InstallFiles">NOT Installed</Custom>
+        <Custom Action="RunPreRemove" Before="RemoveFiles">REMOVE~="ALL"</Custom>
+    </InstallExecuteSequence>
+    <?endif?>
+</Include>

@@ -111,6 +111,86 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- Copy manifest templates to resources during build -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.3.1</version>
+                <executions>
+                    <execution>
+                        <id>copy-manifest-templates</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${project.basedir}/../install/linux</directory>
+                                    <includes>
+                                        <include>info.nfcreader.host.json</include>
+                                    </includes>
+                                    <targetPath>linux</targetPath>
+                                </resource>
+                                <resource>
+                                    <directory>${project.basedir}/../install/macos</directory>
+                                    <includes>
+                                        <include>info.nfcreader.host.json</include>
+                                    </includes>
+                                    <targetPath>macos</targetPath>
+                                </resource>
+                                <resource>
+                                    <directory>${project.basedir}/../install/windows</directory>
+                                    <includes>
+                                        <include>info.nfcreader.host.json</include>
+                                    </includes>
+                                    <targetPath>windows</targetPath>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-installer-scripts</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/installer-scripts</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${project.basedir}/src/main/resources/linux</directory>
+                                    <includes>
+                                        <include>postinstall.sh</include>
+                                        <include>preremove.sh</include>
+                                        <include>postinst</include>
+                                        <include>postinstall</include>
+                                        <include>prerm</include>
+                                        <include>preremove</include>
+                                    </includes>
+                                </resource>
+                                <resource>
+                                    <directory>${project.basedir}/src/main/resources/macos</directory>
+                                    <includes>
+                                        <include>postinstall.sh</include>
+                                        <include>preremove.sh</include>
+                                        <include>postinstall</include>
+                                    </includes>
+                                </resource>
+                                <resource>
+                                    <directory>${project.basedir}/src/main/resources/windows</directory>
+                                    <includes>
+                                        <include>postinstall.bat</include>
+                                        <include>preremove.bat</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 </project>

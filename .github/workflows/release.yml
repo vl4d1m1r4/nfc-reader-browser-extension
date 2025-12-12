@@ -55,10 +55,6 @@ jobs:
             --strip-java-debug-attributes \
             --output target/custom-jre
 
-      - name: Copy manifest templates to resources
-        run: |
-          cp install/linux/info.nfcreader.host.json nfc-reader-host/src/main/resources/linux/
-
       - name: Create jpackage app-image
         run: |
           cd nfc-reader-host
@@ -76,10 +72,10 @@ jobs:
       - name: Create DEB package
         run: |
           cd nfc-reader-host
-          chmod +x src/main/resources/linux/postinstall.sh
-          chmod +x src/main/resources/linux/postinst
-          chmod +x src/main/resources/linux/preremove.sh
-          chmod +x src/main/resources/linux/prerm
+          chmod +x target/installer-scripts/postinstall.sh
+          chmod +x target/installer-scripts/preremove.sh
+          chmod +x target/installer-scripts/postinst
+          chmod +x target/installer-scripts/prerm
           jpackage \
             --input target/jpackage-input \
             --name nfc-reader-host \
@@ -95,13 +91,14 @@ jobs:
             --linux-package-name nfc-reader-host \
             --linux-deb-maintainer "nfc@nfcreader.info" \
             --linux-app-category "Utility" \
+            --app-content target/installer-scripts \
             --resource-dir src/main/resources/linux
 
       - name: Create RPM package
         run: |
           cd nfc-reader-host
-          chmod +x src/main/resources/linux/postinstall
-          chmod +x src/main/resources/linux/preremove
+          chmod +x target/installer-scripts/postinstall
+          chmod +x target/installer-scripts/preremove
           jpackage \
             --input target/jpackage-input \
             --name nfc-reader-host \
@@ -117,6 +114,7 @@ jobs:
             --linux-package-name nfc-reader-host \
             --linux-rpm-license-type "MIT" \
             --linux-app-category "Utility" \
+            --app-content target/installer-scripts \
             --resource-dir src/main/resources/linux
 
       - name: Create tarball
@@ -183,10 +181,6 @@ jobs:
             --strip-java-debug-attributes \
             --output target/custom-jre
 
-      - name: Copy manifest templates to resources
-        run: |
-          cp install/macos/info.nfcreader.host.json nfc-reader-host/src/main/resources/macos/
-
       - name: Create jpackage app-image
         run: |
           cd nfc-reader-host
@@ -205,8 +199,9 @@ jobs:
         run: |
           cd nfc-reader-host
           mkdir -p target/installers
-          chmod +x src/main/resources/macos/postinstall.sh
-          chmod +x src/main/resources/macos/postinstall
+          chmod +x target/installer-scripts/postinstall.sh
+          chmod +x target/installer-scripts/preremove.sh
+          chmod +x target/installer-scripts/postinstall
           jpackage \
             --input target/jpackage-input \
             --name nfc-reader-host \
@@ -218,7 +213,8 @@ jobs:
             --app-version ${{ needs.extract-version.outputs.version }} \
             --vendor "NFC Reader" \
             --description "Native messaging host for NFC card reader browser extension" \
-            --resource-dir src/main/resources/macos
+            --app-content target/installer-scripts \
+            --resource-dir target/installer-scripts
 
       - name: Upload macOS artifacts
         uses: actions/upload-artifact@v4
@@ -258,10 +254,6 @@ jobs:
             --strip-java-debug-attributes `
             --output target/custom-jre
 
-      - name: Copy manifest templates to resources
-        run: |
-          Copy-Item install/windows/info.nfcreader.host.json nfc-reader-host/src/main/resources/windows/
-
       - name: Create jpackage app-image
         run: |
           cd nfc-reader-host
@@ -294,7 +286,8 @@ jobs:
             --win-dir-chooser `
             --win-menu `
             --win-shortcut `
-            --resource-dir src/main/resources/windows
+            --app-content target/installer-scripts `
+            --resource-dir target/installer-scripts
 
       - name: Create EXE installer
         run: |
@@ -313,7 +306,8 @@ jobs:
             --win-dir-chooser `
             --win-menu `
             --win-shortcut `
-            --resource-dir src/main/resources/windows
+            --app-content target/installer-scripts `
+            --resource-dir target/installer-scripts
 
       - name: Upload Windows artifacts
         uses: actions/upload-artifact@v4
