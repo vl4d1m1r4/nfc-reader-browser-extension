@@ -3,7 +3,6 @@
   <Fragment>
     <!-- Custom action to run postinstall script after installation -->
     <CustomAction Id="RunPostInstall"
-                  Directory="INSTALLDIR"
                   ExeCommand="cmd.exe /c &quot;[INSTALLDIR]app\postinstall.bat&quot; &quot;[INSTALLDIR]&quot;"
                   Execute="deferred"
                   Impersonate="yes"
@@ -11,7 +10,6 @@
     
     <!-- Custom action to run preremove script before uninstallation -->
     <CustomAction Id="RunPreRemove"
-                  Directory="INSTALLDIR"
                   ExeCommand="cmd.exe /c &quot;[INSTALLDIR]app\preremove.bat&quot;"
                   Execute="deferred"
                   Impersonate="yes"
@@ -19,9 +17,10 @@
   </Fragment>
   
   <Fragment>
-    <InstallExecuteSequence>
-      <Custom Action="RunPostInstall" After="InstallFiles">NOT Installed AND NOT REMOVE</Custom>
+    <UI />
+    <InstallUISequence>
+      <Custom Action="RunPostInstall" After="InstallFiles">NOT Installed</Custom>
       <Custom Action="RunPreRemove" Before="RemoveFiles">REMOVE~="ALL"</Custom>
-    </InstallExecuteSequence>
+    </InstallUISequence>
   </Fragment>
 </Wix>
