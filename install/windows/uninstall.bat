@@ -17,17 +17,23 @@ if %errorLevel% NEQ 0 (
 
 REM Variables
 set INSTALL_DIR=C:\Program Files\NFCReader
-set BINARY_PATH=%INSTALL_DIR%\nfc-reader-host.exe
+set MANIFEST_DIR=%LOCALAPPDATA%\NFCReader
 set FIREFOX_DIR=%APPDATA%\Mozilla\NativeMessagingHosts
 
-REM Remove binary and directory
-if exist "%BINARY_PATH%" (
-    echo Removing binary...
-    del /F /Q "%BINARY_PATH%"
-    rmdir "%INSTALL_DIR%" 2>nul
-    echo [OK] Binary removed
+REM Remove entire installation directory
+if exist "%INSTALL_DIR%" (
+    echo Removing installation directory...
+    rd /s /q "%INSTALL_DIR%"
+    echo [OK] Installation directory removed
 ) else (
-    echo Binary not found (already removed?)
+    echo Installation directory not found (already removed?)
+)
+
+REM Remove manifest directory
+if exist "%MANIFEST_DIR%" (
+    echo Removing manifest directory...
+    rd /s /q "%MANIFEST_DIR%"
+    echo [OK] Manifest directory removed
 )
 
 REM Remove Chrome registry key
@@ -43,14 +49,15 @@ if %errorLevel% EQU 0 (
 )
 
 REM Remove Firefox manifest
-if exist "%FIREFOX_DIR%\nfcreader.json" (
-    del /F /Q "%FIREFOX_DIR%\nfcreader.json"
+if exist "%FIREFOX_DIR%\info.nfcreader.host.json" (
+    del /F /Q "%FIREFOX_DIR%\info.nfcreader.host.json"
     echo [OK] Firefox manifest removed
 )
 
-REM Remove temp manifest file
-if exist "%TEMP%\info.nfcreader.host.json" (
-    del /F /Q "%TEMP%\info.nfcreader.host.json"
+REM Remove Firefox registry key
+reg delete "HKEY_CURRENT_USER\Software\Mozilla\NativeMessagingHosts\info.nfcreader.host" /f >nul 2>&1
+if %errorLevel% EQU 0 (
+    echo [OK] Firefox registry key removed
 )
 
 echo.

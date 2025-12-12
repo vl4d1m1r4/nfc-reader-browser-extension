@@ -9,19 +9,27 @@ echo "======================================="
 echo ""
 
 # Variables
-BINARY_PATH="/usr/local/bin/nfc-reader-host"
+INSTALL_DIR="/usr/local/lib/nfc-reader"
+BINARY_SYMLINK="/usr/local/bin/nfc-reader-host"
 CHROME_DIR="$HOME/.config/google-chrome/NativeMessagingHosts"
 CHROMIUM_DIR="$HOME/.config/chromium/NativeMessagingHosts"
 EDGE_DIR="$HOME/.config/microsoft-edge/NativeMessagingHosts"
 FIREFOX_DIR="$HOME/.mozilla/native-messaging-hosts"
 
-# Remove binary
-if [ -f "$BINARY_PATH" ]; then
-    echo "Removing binary (requires sudo)..."
-    sudo rm "$BINARY_PATH"
-    echo "✓ Binary removed"
+# Remove installation directory
+if [ -d "$INSTALL_DIR" ]; then
+    echo "Removing installation directory (requires sudo)..."
+    sudo rm -rf "$INSTALL_DIR"
+    echo "✓ Installation directory removed"
 else
-    echo "Binary not found (already removed?)"
+    echo "Installation directory not found (already removed?)"
+fi
+
+# Remove symlink
+if [ -L "$BINARY_SYMLINK" ]; then
+    echo "Removing symlink (requires sudo)..."
+    sudo rm "$BINARY_SYMLINK"
+    echo "✓ Symlink removed"
 fi
 
 # Remove Chrome manifest
@@ -43,8 +51,8 @@ if [ -f "$EDGE_DIR/info.nfcreader.host.json" ]; then
 fi
 
 # Remove Firefox manifest
-if [ -f "$FIREFOX_DIR/nfcreader.json" ]; then
-    rm "$FIREFOX_DIR/nfcreader.json"
+if [ -f "$FIREFOX_DIR/info.nfcreader.host.json" ]; then
+    rm "$FIREFOX_DIR/info.nfcreader.host.json"
     echo "✓ Firefox manifest removed"
 fi
 

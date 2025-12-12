@@ -103,8 +103,12 @@ if /i "%INSTALL_FIREFOX%"=="y" (
     
     REM Update Firefox manifest with correct binary path
     powershell -Command "(Get-Content 'nfcreader.json') -replace 'C:/Program Files/NFCReader/nfc-reader-host.exe', '%BINARY_PATH:\=/%' | Set-Content '!FIREFOX_DIR!\info.nfcreader.host.json'"
+    
+    REM Firefox on Windows also needs registry key
+    reg add "HKEY_CURRENT_USER\Software\Mozilla\NativeMessagingHosts\info.nfcreader.host" /ve /t REG_SZ /d "!FIREFOX_DIR!\info.nfcreader.host.json" /f >nul 2>&1
+    
     if %errorLevel% EQU 0 (
-        echo [OK] Firefox manifest installed
+        echo [OK] Firefox manifest installed and registry key created
     ) else (
         echo [ERROR] Failed to install Firefox manifest
     )
@@ -124,7 +128,7 @@ if not "%EXTENSION_ID%"=="" (
 )
 
 if /i "%INSTALL_FIREFOX%"=="y" (
-    echo   Firefox: %FIREFOX_DIR%\nfcreader.json
+    echo   Firefox: %FIREFOX_DIR%\info.nfcreader.host.json
 )
 
 echo.

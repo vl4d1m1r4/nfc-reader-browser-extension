@@ -87,10 +87,13 @@ body {
 }
 
 @keyframes pulse {
-  0%, 100% { 
+
+  0%,
+  100% {
     box-shadow: 0 0 0 0 rgba(20, 184, 166, 0.7);
   }
-  50% { 
+
+  50% {
     box-shadow: 0 0 0 8px rgba(20, 184, 166, 0);
   }
 }
@@ -109,6 +112,38 @@ body {
   font-size: 13px;
   line-height: 1.5;
   font-weight: 500;
+}
+
+.warning {
+  padding: 16px 20px;
+  margin: 16px 20px;
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+  border-left: 4px solid #f59e0b;
+  border-radius: 12px;
+  color: #92400e;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.1);
+}
+
+.warning-message {
+  font-size: 13px;
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+.warning-message strong {
+  color: #78350f;
+}
+
+.warning-message a {
+  color: #14B8A6;
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(20, 184, 166, 0.3);
+  transition: all 0.2s ease;
+}
+
+.warning-message a:hover {
+  border-bottom-color: #14B8A6;
 }
 
 .install-notice {

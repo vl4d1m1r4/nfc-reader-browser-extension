@@ -114,8 +114,10 @@ uninstall.bat
 
 ### Firefox
 
-Firefox doesn't use extension IDs in the same way. The manifest uses:
-- Extension ID: `nfc@nfcreader.info` (configured in manifest)
+Firefox uses a fixed extension ID defined in the extension's manifest:
+- Extension ID: `nfc@nfcreader.info` (configured in `browser_specific_settings.gecko.id`)
+
+**Important**: When loading the extension in Firefox (as a temporary add-on or via web-ext), it will use this predefined ID. This ensures the native messaging host connection works consistently, unlike Chrome which assigns random IDs to unpacked extensions.
 
 ## Verification
 

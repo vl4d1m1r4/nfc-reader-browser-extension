@@ -33,7 +33,9 @@ Browser extension for reading NFC-A cards from an ACR122U USB reader and auto-fi
 1. Open Firefox and navigate to `about:debugging#/runtime/this-firefox`
 2. Click "Load Temporary Add-on"
 3. Select the `manifest.json` file from the `browser-extension` folder
-4. The extension will be loaded temporarily (until browser restart)
+4. The extension will be loaded with the ID `nfc@nfcreader.info` (as specified in manifest)
+
+**Note**: Firefox uses the extension ID defined in `browser_specific_settings.gecko.id` to ensure consistent native messaging host connection.
 
 ## Usage
 

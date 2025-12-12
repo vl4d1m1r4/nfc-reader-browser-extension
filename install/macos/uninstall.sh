@@ -9,18 +9,18 @@ echo "======================================="
 echo ""
 
 # Variables
-BINARY_PATH="/usr/local/bin/nfc-reader-host"
+APP_PATH="/Applications/nfc-reader-host.app"
 CHROME_DIR="$HOME/Library/Application Support/Google/Chrome/NativeMessagingHosts"
 EDGE_DIR="$HOME/Library/Application Support/Microsoft Edge/NativeMessagingHosts"
 FIREFOX_DIR="$HOME/Library/Application Support/Mozilla/NativeMessagingHosts"
 
-# Remove binary
-if [ -f "$BINARY_PATH" ]; then
-    echo "Removing binary (requires sudo)..."
-    sudo rm "$BINARY_PATH"
-    echo "✓ Binary removed"
+# Remove app bundle
+if [ -d "$APP_PATH" ]; then
+    echo "Removing app bundle (requires sudo)..."
+    sudo rm -rf "$APP_PATH"
+    echo "✓ App bundle removed"
 else
-    echo "Binary not found (already removed?)"
+    echo "App bundle not found (already removed?)"
 fi
 
 # Remove Chrome manifest
@@ -36,8 +36,8 @@ if [ -f "$EDGE_DIR/info.nfcreader.host.json" ]; then
 fi
 
 # Remove Firefox manifest
-if [ -f "$FIREFOX_DIR/nfcreader.json" ]; then
-    rm "$FIREFOX_DIR/nfcreader.json"
+if [ -f "$FIREFOX_DIR/info.nfcreader.host.json" ]; then
+    rm "$FIREFOX_DIR/info.nfcreader.host.json"
     echo "✓ Firefox manifest removed"
 fi
 
