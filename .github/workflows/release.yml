@@ -147,8 +147,9 @@ jobs:
 
       - name: Package browser extension
         run: |
+          mkdir -p nfc-reader-host/target/installers
           cd browser-extension
-          zip -r ../nfc-reader-host/target/installers/nfc-reader-extension-${{ steps.get_version.outputs.version }}.zip \
+          zip -r ../nfc-reader-host/target/installers/nfc-reader-browser-extension-${{ steps.get_version.outputs.version }}.zip \
             manifest.json \
             background/ \
             content/ \
@@ -164,7 +165,12 @@ jobs:
             nfc-reader-host/target/installers/*.deb
             nfc-reader-host/target/installers/*.rpm
             nfc-reader-host/target/installers/*.tar.gz
-            nfc-reader-host/target/installers/nfc-reader-extension-*.zip
+
+      - name: Upload browser extension
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-extension
+          path: nfc-reader-host/target/installers/nfc-reader-browser-extension-*.zip
 
   build-macos:
     runs-on: macos-latest
@@ -398,6 +404,7 @@ jobs:
             linux-installers/*
             macos-installers/*
             windows-installers/*
+            browser-extension/*
           draft: false
           prerelease: false
           generate_release_notes: true
