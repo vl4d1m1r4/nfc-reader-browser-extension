@@ -291,63 +291,26 @@ jobs:
             --runtime-image target/custom-jre `
             --dest target/jpackage
 
-      - name: Install WiX Toolset
-        run: |
-          choco install wixtoolset -y
-          choco install imagemagick -y
-
-      - name: Create application icon
-        run: |
-          cd nfc-reader-host/src/main/resources/icons
-          magick convert icon-16.png icon-32.png icon-48.png icon-128.png ../windows/app-icon.ico
-
-      - name: Prepare application files for packaging
+      - name: Create EXE installer
         run: |
           cd nfc-reader-host
-          New-Item -ItemType Directory -Force -Path target/installers
-          New-Item -ItemType Directory -Force -Path target/wix-build
-
-          # Copy application files
-          Copy-Item -Recurse target/jpackage/nfc-reader-host/* target/wix-build/
-          Copy-Item -Recurse target/installer-scripts target/wix-build/
-
-      - name: Build MSI with WiX
-        run: |
-          cd nfc-reader-host
-          $env:WIX = "C:\Program Files (x86)\WiX Toolset v3.11"
-          $env:PATH = "$env:WIX\bin;$env:PATH"
-
-          # Harvest application files
-          heat.exe dir target\wix-build `
-            -cg ApplicationFiles `
-            -gg `
-            -scom `
-            -sreg `
-            -sfrag `
-            -srd `
-            -dr INSTALLDIR `
-            -var var.SourceDir `
-            -out target\files.wxs
-
-          # Compile WiX sources
-          candle.exe `
-            "-dSourceDir=target\wix-build" `
-            "-dVersion=${{ needs.extract-version.outputs.version }}" `
-            "-arch" "x64" `
-            "-ext" "WixUtilExtension" `
-            "-out" "target\" `
-            src\main\resources\windows\installer.wxs `
-            target\files.wxs
-
-          # Link into MSI
-          light.exe `
-            "-out" "target\installers\nfc-reader-host-${{ needs.extract-version.outputs.version }}.msi" `
-            target\installer.wixobj `
-            target\files.wixobj `
-            "-b" "src\main\resources\windows" `
-            "-ext" "WixUIExtension" `
-            "-ext" "WixUtilExtension" `
-            "-sval"
+          jpackage `
+            --input target/jpackage-input `
+            --name "NFC Reader Host" `
+            --main-jar nfc-reader-host-fat.jar `
+            --main-class info.nfcreader.host.Main `
+            --type exe `
+            --runtime-image target/custom-jre `
+            --dest target/installers `
+            --app-version ${{ needs.extract-version.outputs.version }} `
+            --vendor "NFC Reader" `
+            --description "Native messaging host for NFC card reader browser extension" `
+            --icon src/main/resources/windows/app-icon.ico `
+            --win-dir-chooser `
+            --win-menu `
+            --win-shortcut `
+            --app-content target/installer-scripts `
+            --resource-dir target/installer-scripts
 
       - name: Upload Windows artifacts
         uses: actions/upload-artifact@v4
@@ -355,6 +318,7 @@ jobs:
           name: windows-installers
           path: |
             nfc-reader-host/target/installers/*.msi
+            nfc-reader-host/target/installers/*.exe
 
   create-release:
     needs: [build-linux, build-macos, build-windows]
