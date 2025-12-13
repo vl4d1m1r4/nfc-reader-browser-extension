@@ -95,9 +95,4 @@
     </ComponentGroup>
   </Fragment>
 
-  <!-- Application Files - This will be populated by Heat.exe during build -->
-  <Fragment>
-    <ComponentGroup Id="ApplicationFiles" Directory="INSTALLDIR" />
-  </Fragment>
-
 </Wix>
