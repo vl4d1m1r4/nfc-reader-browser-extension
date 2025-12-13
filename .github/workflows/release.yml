@@ -349,34 +349,12 @@ jobs:
             "-ext" "WixUtilExtension" `
             "-sval"
 
-      - name: Create EXE installer
-        run: |
-          cd nfc-reader-host
-          jpackage `
-            --input target/jpackage-input `
-            --name "NFC Reader Host" `
-            --main-jar nfc-reader-host-fat.jar `
-            --main-class info.nfcreader.host.Main `
-            --type exe `
-            --runtime-image target/custom-jre `
-            --dest target/installers `
-            --app-version ${{ needs.extract-version.outputs.version }} `
-            --vendor "NFC Reader" `
-            --description "Native messaging host for NFC card reader browser extension" `
-            --icon src/main/resources/windows/app-icon.ico `
-            --win-dir-chooser `
-            --win-menu `
-            --win-shortcut `
-            --app-content target/installer-scripts `
-            --resource-dir target/installer-scripts
-
       - name: Upload Windows artifacts
         uses: actions/upload-artifact@v4
         with:
           name: windows-installers
           path: |
             nfc-reader-host/target/installers/*.msi
-            nfc-reader-host/target/installers/*.exe
 
   create-release:
     needs: [build-linux, build-macos, build-windows]
