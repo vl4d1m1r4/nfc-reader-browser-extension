@@ -10,6 +10,9 @@ REM Chrome/Edge manifest registry keys
 set CHROME_KEY=HKEY_CURRENT_USER\SOFTWARE\Google\Chrome\NativeMessagingHosts\info.nfcreader.host
 set EDGE_KEY=HKEY_CURRENT_USER\SOFTWARE\Microsoft\Edge\NativeMessagingHosts\info.nfcreader.host
 
+REM Firefox manifest registry key
+set FIREFOX_KEY=HKEY_CURRENT_USER\SOFTWARE\Mozilla\NativeMessagingHosts\info.nfcreader.host
+
 REM Manifest directories
 set MANIFEST_DIR=%LOCALAPPDATA%\NFCReader
 set FIREFOX_DIR=%APPDATA%\Mozilla\NativeMessagingHosts
@@ -28,6 +31,14 @@ if %errorLevel% EQU 0 (
     echo [OK] Edge manifest registry entry removed
 ) else (
     echo [INFO] Edge manifest registry entry not found
+)
+
+REM Remove Firefox registry key
+reg delete "%FIREFOX_KEY%" /f >nul 2>&1
+if %errorLevel% EQU 0 (
+    echo [OK] Firefox manifest registry entry removed
+) else (
+    echo [INFO] Firefox manifest registry entry not found
 )
 
 REM Remove manifest files

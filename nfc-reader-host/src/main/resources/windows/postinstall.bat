@@ -18,6 +18,7 @@ set CHROME_KEY=HKEY_CURRENT_USER\SOFTWARE\Google\Chrome\NativeMessagingHosts\inf
 set EDGE_KEY=HKEY_CURRENT_USER\SOFTWARE\Microsoft\Edge\NativeMessagingHosts\info.nfcreader.host
 
 REM Firefox manifest path (per-user)
+set FIREFOX_KEY=HKEY_CURRENT_USER\SOFTWARE\Mozilla\NativeMessagingHosts\info.nfcreader.host
 set FIREFOX_DIR=%APPDATA%\Mozilla\NativeMessagingHosts
 
 REM Create manifest directory
@@ -62,6 +63,14 @@ if exist "!FIREFOX_MANIFEST!" (
     echo [OK] Firefox manifest created
 ) else (
     echo [WARNING] Failed to create Firefox manifest
+)
+
+REM Register Firefox manifest in registry
+reg add "%FIREFOX_KEY%" /ve /t REG_SZ /d "!FIREFOX_MANIFEST!" /f >nul 2>&1
+if %errorLevel% EQU 0 (
+    echo [OK] Firefox manifest registered in registry
+) else (
+    echo [WARNING] Failed to register Firefox manifest in registry
 )
 
 echo.
