@@ -291,6 +291,10 @@ jobs:
             --runtime-image target/custom-jre `
             --dest target/jpackage
 
+      - name: Install Image Toolset
+        run: |
+          choco install imagemagick -y
+
       - name: Create application icon
         run: |
           cd nfc-reader-host/src/main/resources/icons
