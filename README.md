@@ -42,24 +42,7 @@ mvn clean package -Pnative
 This creates a native binary in `target/nfc-reader-host` (or `nfc-reader-host.exe` on Windows).
 
 ### 2. Install the Native Host
-
-#### Linux
-```bash
-cd install/linux
-./install.sh
-```
-
-#### macOS
-```bash
-cd install/macos
-./install.sh
-```
-
-#### Windows (Run as Administrator)
-```cmd
-cd install\windows
-install.bat
-```
+TBD
 
 ### 3. Install the Browser Extension
 
@@ -95,12 +78,6 @@ nfc-reader/
 │   ├── popup/                # Extension popup UI
 │   ├── content/              # Content script
 │   ├── icons/                # Extension icons
-│   └── README.md
-│
-├── install/                  # Installation scripts
-│   ├── linux/               # Linux installation
-│   ├── macos/               # macOS installation
-│   ├── windows/             # Windows installation
 │   └── README.md
 │
 ├── PLAN.md                  # Implementation plan
@@ -194,8 +171,6 @@ java -jar target/nfc-reader-host-fat.jar listen 0
 - Focus on a text input field before scanning
 - Check content script is loaded (browser console)
 - Verify input type is supported
-
-See [Installation Guide](install/README.md) for more troubleshooting tips.
 
 ## Security
 

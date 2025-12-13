@@ -1,9 +1,0 @@
-{
-  "name": "info.nfcreader.host",
-  "description": "NFC Reader Native Messaging Host",
-  "path": "/usr/local/bin/nfc-reader-host",
-  "type": "stdio",
-  "allowed_extensions": [
-    "nfc@nfcreader.info"
-  ]
-}

@@ -1,7 +1,7 @@
 {
   "name": "info.nfcreader.host",
   "description": "NFC Reader Native Messaging Host",
-  "path": "/usr/local/bin/nfc-reader-host",
+  "path": "C:\\Program Files\\NFC Reader Host\\nfc-reader-host.exe",
   "type": "stdio",
   "allowed_extensions": [
     "nfc@nfcreader.info"

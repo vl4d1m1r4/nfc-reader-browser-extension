@@ -129,7 +129,9 @@
                             <resources>
                                 <resource>
                                     <directory>${project.basedir}/src/main/resources/linux</directory>
+                                    <targetPath>linux</targetPath>
                                     <includes>
+                                        <include>info.nfcreader.host.json</include>
                                         <include>postinstall.sh</include>
                                         <include>preremove.sh</include>
                                         <include>postinst</include>
@@ -140,7 +142,10 @@
                                 </resource>
                                 <resource>
                                     <directory>${project.basedir}/src/main/resources/macos</directory>
+                                    <targetPath>macos</targetPath>
                                     <includes>
+                                        <include>entitlements.plist</include>
+                                        <include>info.nfcreader.host.json</include>
                                         <include>postinstall.sh</include>
                                         <include>preremove.sh</include>
                                         <include>postinstall</include>
@@ -148,28 +153,11 @@
                                 </resource>
                                 <resource>
                                     <directory>${project.basedir}/src/main/resources/windows</directory>
+                                    <targetPath>windows</targetPath>
                                     <includes>
-                                        <include>postinstall.bat</include>
-                                        <include>preremove.bat</include>
+                                        <include>info.nfcreader.host.json</include>
+                                        <include>info.nfcreader.host.firefox.json</include>
                                         <include>overrides.wxi</include>
-                                    </includes>
-                                </resource>
-                                <resource>
-                                    <directory>${project.basedir}/../install/linux</directory>
-                                    <includes>
-                                        <include>info.nfcreader.host.json</include>
-                                    </includes>
-                                </resource>
-                                <resource>
-                                    <directory>${project.basedir}/../install/macos</directory>
-                                    <includes>
-                                        <include>info.nfcreader.host.json</include>
-                                    </includes>
-                                </resource>
-                                <resource>
-                                    <directory>${project.basedir}/../install/windows</directory>
-                                    <includes>
-                                        <include>info.nfcreader.host.json</include>
                                     </includes>
                                 </resource>
                             </resources>

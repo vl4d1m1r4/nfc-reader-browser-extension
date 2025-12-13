@@ -67,9 +67,9 @@ jobs:
           CHROME_EXT_ID="${{ github.event.inputs.chrome_extension_id }}"
 
           # Update manifest JSON files in install folder
-          sed -i "s/EXTENSION_ID_PLACEHOLDER/$CHROME_EXT_ID/g" install/linux/info.nfcreader.host.json
-          sed -i "s/EXTENSION_ID_PLACEHOLDER/$CHROME_EXT_ID/g" install/macos/info.nfcreader.host.json
-          sed -i "s/EXTENSION_ID_PLACEHOLDER/$CHROME_EXT_ID/g" install/windows/info.nfcreader.host.json
+          sed -i "s/EXTENSION_ID_PLACEHOLDER/$CHROME_EXT_ID/g" nfc-reader-host/src/main/resources/linux/info.nfcreader.host.json
+          sed -i "s/EXTENSION_ID_PLACEHOLDER/$CHROME_EXT_ID/g" nfc-reader-host/src/main/resources/macos/info.nfcreader.host.json
+          sed -i "s/EXTENSION_ID_PLACEHOLDER/$CHROME_EXT_ID/g" nfc-reader-host/src/main/resources/windows/info.nfcreader.host.json
 
       - name: Configure Git
         run: |
@@ -79,7 +79,9 @@ jobs:
       - name: Commit release version
         run: |
           git add nfc-reader-host/pom.xml browser-extension/manifest.json
-          git add install/*/info.nfcreader.host.json
+          git add nfc-reader-host/src/main/resources/linux/info.nfcreader.host.json
+          git add nfc-reader-host/src/main/resources/macos/info.nfcreader.host.json
+          git add nfc-reader-host/src/main/resources/windows/info.nfcreader.host.json
           git commit -m "Release version ${{ github.event.inputs.version }}"
           git push origin main
 
