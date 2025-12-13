@@ -157,6 +157,12 @@
                                     <includes>
                                         <include>info.nfcreader.host.json</include>
                                         <include>info.nfcreader.host.firefox.json</include>
+                                    </includes>
+                                </resource>
+                                <!-- WiX overrides must be in resource-dir root -->
+                                <resource>
+                                    <directory>${project.basedir}/src/main/resources/windows</directory>
+                                    <includes>
                                         <include>overrides.wxi</include>
                                     </includes>
                                 </resource>
