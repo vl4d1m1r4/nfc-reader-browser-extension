@@ -87,6 +87,7 @@ jobs:
             --app-version ${{ needs.extract-version.outputs.version }} \
             --vendor "NFC Reader" \
             --description "Native messaging host for NFC card reader browser extension" \
+            --icon src/main/resources/icons/icon-128.png \
             --linux-shortcut \
             --linux-package-name nfc-reader-host \
             --linux-deb-maintainer "nfc@nfcreader.info" \
@@ -110,6 +111,7 @@ jobs:
             --app-version ${{ needs.extract-version.outputs.version }} \
             --vendor "NFC Reader" \
             --description "Native messaging host for NFC card reader browser extension" \
+            --icon src/main/resources/icons/icon-128.png \
             --linux-shortcut \
             --linux-package-name nfc-reader-host \
             --linux-rpm-license-type "MIT" \
@@ -181,6 +183,26 @@ jobs:
             --strip-java-debug-attributes \
             --output target/custom-jre
 
+      - name: Create application icon
+        run: |
+          cd nfc-reader-host
+          # Create iconset directory
+          mkdir -p src/main/resources/icons/app-icon.iconset
+
+          # Copy and resize icons for ICNS format
+          sips -z 16 16     src/main/resources/icons/icon-16.png  --out src/main/resources/icons/app-icon.iconset/icon_16x16.png
+          sips -z 32 32     src/main/resources/icons/icon-32.png  --out src/main/resources/icons/app-icon.iconset/icon_16x16@2x.png
+          sips -z 32 32     src/main/resources/icons/icon-32.png  --out src/main/resources/icons/app-icon.iconset/icon_32x32.png
+          sips -z 64 64     src/main/resources/icons/icon-128.png --out src/main/resources/icons/app-icon.iconset/icon_32x32@2x.png
+          sips -z 128 128   src/main/resources/icons/icon-128.png --out src/main/resources/icons/app-icon.iconset/icon_128x128.png
+          sips -z 256 256   src/main/resources/icons/icon-128.png --out src/main/resources/icons/app-icon.iconset/icon_128x128@2x.png
+          sips -z 256 256   src/main/resources/icons/icon-128.png --out src/main/resources/icons/app-icon.iconset/icon_256x256.png
+          sips -z 512 512   src/main/resources/icons/icon-128.png --out src/main/resources/icons/app-icon.iconset/icon_256x256@2x.png
+          sips -z 512 512   src/main/resources/icons/icon-128.png --out src/main/resources/icons/app-icon.iconset/icon_512x512.png
+
+          # Convert to ICNS
+          iconutil -c icns src/main/resources/icons/app-icon.iconset -o src/main/resources/icons/app-icon.icns
+
       - name: Create jpackage app-image
         run: |
           cd nfc-reader-host
@@ -213,6 +235,7 @@ jobs:
             --app-version ${{ needs.extract-version.outputs.version }} \
             --vendor "NFC Reader" \
             --description "Native messaging host for NFC card reader browser extension" \
+            --icon src/main/resources/icons/app-icon.icns \
             --app-content target/installer-scripts \
             --resource-dir target/installer-scripts
 
@@ -268,26 +291,63 @@ jobs:
             --runtime-image target/custom-jre `
             --dest target/jpackage
 
-      - name: Create MSI installer
+      - name: Install WiX Toolset
+        run: |
+          choco install wixtoolset -y
+          choco install imagemagick -y
+
+      - name: Create application icon
+        run: |
+          cd nfc-reader-host/src/main/resources/icons
+          magick convert icon-16.png icon-32.png icon-48.png icon-128.png ../windows/app-icon.ico
+
+      - name: Prepare application files for packaging
         run: |
           cd nfc-reader-host
           New-Item -ItemType Directory -Force -Path target/installers
-          jpackage `
-            --input target/jpackage-input `
-            --name "NFC Reader Host" `
-            --main-jar nfc-reader-host-fat.jar `
-            --main-class info.nfcreader.host.Main `
-            --type msi `
-            --runtime-image target/custom-jre `
-            --dest target/installers `
-            --app-version ${{ needs.extract-version.outputs.version }} `
-            --vendor "NFC Reader" `
-            --description "Native messaging host for NFC card reader browser extension" `
-            --win-dir-chooser `
-            --win-menu `
-            --win-shortcut `
-            --app-content target/installer-scripts `
-            --resource-dir target/installer-scripts
+          New-Item -ItemType Directory -Force -Path target/wix-build
+
+          # Copy application files
+          Copy-Item -Recurse target/jpackage/nfc-reader-host/* target/wix-build/
+          Copy-Item -Recurse target/installer-scripts target/wix-build/
+
+      - name: Build MSI with WiX
+        run: |
+          cd nfc-reader-host
+          $env:WIX = "C:\Program Files (x86)\WiX Toolset v3.11"
+          $env:PATH = "$env:WIX\bin;$env:PATH"
+
+          # Harvest application files
+          heat.exe dir target/wix-build `
+            -cg ApplicationFiles `
+            -gg `
+            -scom `
+            -sreg `
+            -sfrag `
+            -srd `
+            -dr INSTALLDIR `
+            -var var.SourceDir `
+            -out target/files.wxs
+
+          # Compile WiX sources
+          candle.exe `
+            -dSourceDir=target/wix-build `
+            -dVersion=${{ needs.extract-version.outputs.version }} `
+            src/main/resources/windows/installer.wxs `
+            target/files.wxs `
+            -out target/ `
+            -arch x64 `
+            -ext WixUtilExtension
+
+          # Link into MSI
+          light.exe `
+            -out target/installers/nfc-reader-host-${{ needs.extract-version.outputs.version }}.msi `
+            target/installer.wixobj `
+            target/files.wixobj `
+            -b src/main/resources/windows `
+            -ext WixUIExtension `
+            -ext WixUtilExtension `
+            -sval
 
       - name: Create EXE installer
         run: |
@@ -303,6 +363,7 @@ jobs:
             --app-version ${{ needs.extract-version.outputs.version }} `
             --vendor "NFC Reader" `
             --description "Native messaging host for NFC card reader browser extension" `
+            --icon src/main/resources/windows/app-icon.ico `
             --win-dir-chooser `
             --win-menu `
             --win-shortcut `
