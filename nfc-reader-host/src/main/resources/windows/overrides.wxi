@@ -2,39 +2,41 @@
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
 
     <!-- Create registry entries for Native Messaging -->
-    <DirectoryRef Id="TARGETDIR">
-        <Component Id="ChromeNativeMessaging" Guid="a1b2c3d4-e5f6-4789-abcd-ef0123456789">
-            <!-- Chrome registry entry pointing to app directory manifest -->
-            <RegistryKey Root="HKCU"
-                Key="SOFTWARE\Google\Chrome\NativeMessagingHosts\info.nfcreader.host">
-                <RegistryValue Type="string"
-                    Value="[INSTALLDIR]installer-scripts\windows\info.nfcreader.host.json"
-                    KeyPath="yes" />
-            </RegistryKey>
-        </Component>
-        <Component Id="EdgeNativeMessaging" Guid="b2c3d4e5-f6a7-4890-bcde-f01234567890">
-            <!-- Edge registry entry pointing to app directory manifest -->
-            <RegistryKey Root="HKCU"
-                Key="SOFTWARE\Microsoft\Edge\NativeMessagingHosts\info.nfcreader.host">
-                <RegistryValue Type="string"
-                    Value="[INSTALLDIR]installer-scripts\windows\info.nfcreader.host.json"
-                    KeyPath="yes" />
-            </RegistryKey>
-        </Component>
-        <Component Id="FirefoxNativeMessaging" Guid="c3d4e5f6-a7b8-4901-cdef-012345678901">
-            <!-- Firefox registry entry -->
-            <RegistryKey Root="HKCU" Key="SOFTWARE\Mozilla\NativeMessagingHosts\info.nfcreader.host">
-                <RegistryValue Type="string"
-                    Value="[INSTALLDIR]installer-scripts\windows\info.nfcreader.host.firefox.json"
-                    KeyPath="yes" />
-            </RegistryKey>
-        </Component>
-    </DirectoryRef>
+    <Fragment>
+        <DirectoryRef Id="TARGETDIR">
+            <Component Id="ChromeNativeMessaging" Guid="a1b2c3d4-e5f6-4789-abcd-ef0123456789">
+                <!-- Chrome registry entry pointing to app directory manifest -->
+                <RegistryKey Root="HKCU"
+                    Key="SOFTWARE\Google\Chrome\NativeMessagingHosts\info.nfcreader.host">
+                    <RegistryValue Type="string"
+                        Value="[INSTALLDIR]installer-scripts\windows\info.nfcreader.host.json"
+                        KeyPath="yes" />
+                </RegistryKey>
+            </Component>
+            <Component Id="EdgeNativeMessaging" Guid="b2c3d4e5-f6a7-4890-bcde-f01234567890">
+                <!-- Edge registry entry pointing to app directory manifest -->
+                <RegistryKey Root="HKCU"
+                    Key="SOFTWARE\Microsoft\Edge\NativeMessagingHosts\info.nfcreader.host">
+                    <RegistryValue Type="string"
+                        Value="[INSTALLDIR]installer-scripts\windows\info.nfcreader.host.json"
+                        KeyPath="yes" />
+                </RegistryKey>
+            </Component>
+            <Component Id="FirefoxNativeMessaging" Guid="c3d4e5f6-a7b8-4901-cdef-012345678901">
+                <!-- Firefox registry entry -->
+                <RegistryKey Root="HKCU"
+                    Key="SOFTWARE\Mozilla\NativeMessagingHosts\info.nfcreader.host">
+                    <RegistryValue Type="string"
+                        Value="[INSTALLDIR]installer-scripts\windows\info.nfcreader.host.firefox.json"
+                        KeyPath="yes" />
+                </RegistryKey>
+            </Component>
+        </DirectoryRef>
 
-    <!-- Reference main feature to add our components -->
-    <FeatureRef Id="DefaultFeature">
-        <ComponentRef Id="ChromeNativeMessaging" />
-        <ComponentRef Id="EdgeNativeMessaging" />
-        <ComponentRef Id="FirefoxNativeMessaging" />
-    </FeatureRef>
+        <Feature Id="NativeMessagingFeature" Title="Native Messaging Support" Level="1">
+            <ComponentRef Id="ChromeNativeMessaging" />
+            <ComponentRef Id="EdgeNativeMessaging" />
+            <ComponentRef Id="FirefoxNativeMessaging" />
+        </Feature>
+    </Fragment>
 </Include>
