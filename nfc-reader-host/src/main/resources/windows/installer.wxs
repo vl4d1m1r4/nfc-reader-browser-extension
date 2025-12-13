@@ -3,7 +3,7 @@
   <Product Id="*" 
            Name="NFC Reader Host" 
            Language="1033" 
-           Version="!(bind.FileVersion.MainExecutable)" 
+           Version="$(var.Version)" 
            Manufacturer="NFC Reader" 
            UpgradeCode="d1e2f3a4-b5c6-4d78-9abc-def012345678">
     
@@ -22,13 +22,7 @@
 
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="LocalAppDataFolder">
-        <Directory Id="INSTALLDIR" Name="NFC Reader Host">
-          <Directory Id="AppDir" Name="app" />
-          <Directory Id="RuntimeDir" Name="runtime" />
-          <Directory Id="InstallerScriptsDir" Name="installer-scripts">
-            <Directory Id="WindowsScriptsDir" Name="windows" />
-          </Directory>
-        </Directory>
+        <Directory Id="INSTALLDIR" Name="NFC Reader Host" />
       </Directory>
       <Directory Id="ProgramMenuFolder">
         <Directory Id="ApplicationProgramsFolder" Name="NFC Reader Host"/>
@@ -47,7 +41,7 @@
         <Shortcut Id="ApplicationStartMenuShortcut"
                   Name="NFC Reader Host"
                   Description="Native messaging host for NFC card reader browser extension"
-                  Target="[INSTALLDIR]app\NFC Reader Host.exe"
+                  Target="[INSTALLDIR]nfc-reader-host.exe"
                   WorkingDirectory="INSTALLDIR"
                   Icon="AppIcon.ico"/>
         <RemoveFolder Id="CleanUpShortCut" Directory="ApplicationProgramsFolder" On="uninstall"/>
@@ -66,7 +60,7 @@
         <RegistryKey Root="HKCU"
                      Key="SOFTWARE\Google\Chrome\NativeMessagingHosts\info.nfcreader.host">
           <RegistryValue Type="string"
-                        Value="[INSTALLDIR]installer-scripts\windows\info.nfcreader.host.json"
+                        Value="[INSTALLDIR]installer-scripts\\windows\\info.nfcreader.host.json"
                         KeyPath="yes" />
         </RegistryKey>
       </Component>
@@ -77,7 +71,7 @@
         <RegistryKey Root="HKCU"
                      Key="SOFTWARE\Microsoft\Edge\NativeMessagingHosts\info.nfcreader.host">
           <RegistryValue Type="string"
-                        Value="[INSTALLDIR]installer-scripts\windows\info.nfcreader.host.json"
+                        Value="[INSTALLDIR]installer-scripts\\windows\\info.nfcreader.host.json"
                         KeyPath="yes" />
         </RegistryKey>
       </Component>
@@ -88,7 +82,7 @@
         <RegistryKey Root="HKCU"
                      Key="SOFTWARE\Mozilla\NativeMessagingHosts\info.nfcreader.host">
           <RegistryValue Type="string"
-                        Value="[INSTALLDIR]installer-scripts\windows\info.nfcreader.host.firefox.json"
+                        Value="[INSTALLDIR]installer-scripts\\windows\\info.nfcreader.host.firefox.json"
                         KeyPath="yes" />
         </RegistryKey>
       </Component>
