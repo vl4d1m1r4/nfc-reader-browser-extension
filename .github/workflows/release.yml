@@ -331,20 +331,20 @@ jobs:
 
           # Compile WiX sources
           candle.exe `
-            -dSourceDir=target/wix-build `
-            -dVersion=${{ needs.extract-version.outputs.version }} `
-            src/main/resources/windows/installer.wxs `
-            target/files.wxs `
-            -out target/ `
-            -arch x64 `
-            -ext WixUtilExtension
+            "-dSourceDir=target\wix-build" `
+            "-dVersion=${{ needs.extract-version.outputs.version }}" `
+            src\main\resources\windows\installer.wxs `
+            target\files.wxs `
+            "-out" "target\" `
+            "-arch" "x64" `
+            "-ext" "WixUtilExtension"
 
           # Link into MSI
           light.exe `
-            -out target/installers/nfc-reader-host-${{ needs.extract-version.outputs.version }}.msi `
-            target/installer.wixobj `
-            target/files.wixobj `
-            -b src/main/resources/windows `
+            -out target\installers\nfc-reader-host-${{ needs.extract-version.outputs.version }}.msi `
+            target\installer.wixobj `
+            target\files.wixobj `
+            -b src\main\resources\windows `
             -ext WixUIExtension `
             -ext WixUtilExtension `
             -sval
