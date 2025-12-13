@@ -72,10 +72,10 @@ jobs:
       - name: Create DEB package
         run: |
           cd nfc-reader-host
-          chmod +x target/installer-scripts/postinstall.sh
-          chmod +x target/installer-scripts/preremove.sh
-          chmod +x target/installer-scripts/postinst
-          chmod +x target/installer-scripts/prerm
+          chmod +x target/installer-scripts/linux/postinstall.sh
+          chmod +x target/installer-scripts/linux/preremove.sh
+          chmod +x target/installer-scripts/linux/postinst
+          chmod +x target/installer-scripts/linux/prerm
           jpackage \
             --input target/jpackage-input \
             --name nfc-reader-host \
@@ -97,8 +97,8 @@ jobs:
       - name: Create RPM package
         run: |
           cd nfc-reader-host
-          chmod +x target/installer-scripts/postinstall
-          chmod +x target/installer-scripts/preremove
+          chmod +x target/installer-scripts/linux/postinstall
+          chmod +x target/installer-scripts/linux/preremove
           jpackage \
             --input target/jpackage-input \
             --name nfc-reader-host \
@@ -199,9 +199,9 @@ jobs:
         run: |
           cd nfc-reader-host
           mkdir -p target/installers
-          chmod +x target/installer-scripts/postinstall.sh
-          chmod +x target/installer-scripts/preremove.sh
-          chmod +x target/installer-scripts/postinstall
+          chmod +x target/installer-scripts/macos/postinstall.sh
+          chmod +x target/installer-scripts/macos/preremove.sh
+          chmod +x target/installer-scripts/macos/postinstall
           jpackage \
             --input target/jpackage-input \
             --name nfc-reader-host \
