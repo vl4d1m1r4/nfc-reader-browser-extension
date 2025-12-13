@@ -9,7 +9,8 @@
     
     <Package InstallerVersion="200" 
              Compressed="yes" 
-             InstallScope="perUser" 
+             InstallScope="perMachine" 
+             Platform="x64"
              Description="Native messaging host for NFC card reader browser extension" />
 
     <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
@@ -21,7 +22,7 @@
     <Property Id="ARPPRODUCTICON" Value="AppIcon.ico" />
 
     <Directory Id="TARGETDIR" Name="SourceDir">
-      <Directory Id="LocalAppDataFolder">
+      <Directory Id="ProgramFiles64Folder">
         <Directory Id="INSTALLDIR" Name="NFC Reader Host" />
       </Directory>
       <Directory Id="ProgramMenuFolder">
@@ -57,10 +58,10 @@
       <Component Id="ChromeNativeMessaging" 
                  Guid="a1b2c3d4-e5f6-4789-abcd-ef0123456789" 
                  Directory="INSTALLDIR">
-        <RegistryKey Root="HKCU"
+        <RegistryKey Root="HKLM"
                      Key="SOFTWARE\Google\Chrome\NativeMessagingHosts\info.nfcreader.host">
           <RegistryValue Type="string"
-                        Value="[INSTALLDIR]installer-scripts\\windows\\info.nfcreader.host.json"
+                        Value="[INSTALLDIR]info.nfcreader.host.json"
                         KeyPath="yes" />
         </RegistryKey>
       </Component>
@@ -68,10 +69,10 @@
       <Component Id="EdgeNativeMessaging" 
                  Guid="b2c3d4e5-f6a7-4890-bcde-f01234567890" 
                  Directory="INSTALLDIR">
-        <RegistryKey Root="HKCU"
+        <RegistryKey Root="HKLM"
                      Key="SOFTWARE\Microsoft\Edge\NativeMessagingHosts\info.nfcreader.host">
           <RegistryValue Type="string"
-                        Value="[INSTALLDIR]installer-scripts\\windows\\info.nfcreader.host.json"
+                        Value="[INSTALLDIR]info.nfcreader.host.json"
                         KeyPath="yes" />
         </RegistryKey>
       </Component>
@@ -79,10 +80,10 @@
       <Component Id="FirefoxNativeMessaging" 
                  Guid="c3d4e5f6-a7b8-4901-cdef-012345678901" 
                  Directory="INSTALLDIR">
-        <RegistryKey Root="HKCU"
+        <RegistryKey Root="HKLM"
                      Key="SOFTWARE\Mozilla\NativeMessagingHosts\info.nfcreader.host">
           <RegistryValue Type="string"
-                        Value="[INSTALLDIR]installer-scripts\\windows\\info.nfcreader.host.firefox.json"
+                        Value="[INSTALLDIR]info.nfcreader.host.firefox.json"
                         KeyPath="yes" />
         </RegistryKey>
       </Component>
