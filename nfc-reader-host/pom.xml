@@ -6,7 +6,7 @@
 
     <groupId>info.nfcreader</groupId>
     <artifactId>nfc-reader-host</artifactId>
-    <version>0.0.26-SNAPSHOT</version>
+    <version>0.0.26</version>
     <packaging>jar</packaging>
 
     <name>NFC Reader Native Messaging Host</name>
