@@ -154,6 +154,7 @@ jobs:
   build-macos:
     needs: extract-version
     runs-on: macos-latest
+    if: false # Disabled: requires version 1.0.0 or above, not tested yet
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -358,7 +359,7 @@ jobs:
             nfc-reader-host/target/installers/*.msi
 
   create-release:
-    needs: [build-linux, build-macos, build-windows]
+    needs: [build-linux, build-windows]
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/')
     steps:

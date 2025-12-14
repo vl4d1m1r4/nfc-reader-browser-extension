@@ -26,10 +26,8 @@ document.addEventListener("DOMContentLoaded", () => {
   link.type = "image/svg+xml";
   link.href = "nfc-icon.svg";
   document.head.appendChild(link);
+
   // Insert Nav
-  // We look for a placeholder or just prepend to body
-  // But we need to be careful not to duplicate if it's already there (during development/transition)
-  // The user asked to extract, so I will remove the hardcoded ones from HTML.
   document.body.insertAdjacentHTML("afterbegin", navHtml);
 
   // Insert Footer
