@@ -3,7 +3,5 @@
   "description": "NFC Reader Native Messaging Host",
   "path": "C:\\Program Files\\NFC Reader Host\\nfc-reader-host.exe",
   "type": "stdio",
-  "allowed_origins": [
-    "chrome-extension://EXTENSION_ID_PLACEHOLDER/"
-  ]
+  "allowed_origins": ["chrome-extension://ddobllicdfhebpoliholpjfiafmgijfh/"]
 }

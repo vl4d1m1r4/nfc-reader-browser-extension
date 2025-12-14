@@ -28,13 +28,6 @@ This directory contains GitHub Actions workflows for automated building, testing
 
 **Purpose**: Creates installer packages with native messaging manifests and GitHub releases
 
-**Extension ID Configuration**:
-When manually triggering the workflow, you can specify:
-- **Chrome/Edge Extension ID**: The Chrome Web Store extension ID (defaults to `EXTENSION_ID_PLACEHOLDER`)
-- **Firefox Extension ID**: The Firefox Add-on ID (defaults to `nfc@nfcreader.info`)
-
-These IDs are automatically embedded in the native messaging manifests during installation.
-
 **Jobs**:
 - **build-linux**: 
   - Builds DEB package with post-install scripts

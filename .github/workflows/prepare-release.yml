@@ -6,10 +6,6 @@ on:
       version:
         description: "Release version (e.g., 1.0.0)"
         required: true
-      chrome_extension_id:
-        description: "Chrome/Edge Extension ID (optional, defaults to placeholder)"
-        required: false
-        default: "EXTENSION_ID_PLACEHOLDER"
       next_dev_version:
         description: "Next development version (e.g., 1.0.1-SNAPSHOT). Leave empty to auto-increment."
         required: false
@@ -61,15 +57,6 @@ jobs:
           cd browser-extension
           VERSION=${{ github.event.inputs.version }}
           sed -i "s/\"version\": \"[^\"]*\"/\"version\": \"$VERSION\"/" manifest.json
-
-      - name: Configure Chrome extension ID in manifests
-        run: |
-          CHROME_EXT_ID="${{ github.event.inputs.chrome_extension_id }}"
-
-          # Update manifest JSON files in install folder
-          sed -i "s/EXTENSION_ID_PLACEHOLDER/$CHROME_EXT_ID/g" nfc-reader-host/src/main/resources/linux/info.nfcreader.host.json
-          sed -i "s/EXTENSION_ID_PLACEHOLDER/$CHROME_EXT_ID/g" nfc-reader-host/src/main/resources/macos/info.nfcreader.host.json
-          sed -i "s/EXTENSION_ID_PLACEHOLDER/$CHROME_EXT_ID/g" nfc-reader-host/src/main/resources/windows/info.nfcreader.host.json
 
       - name: Configure Git
         run: |

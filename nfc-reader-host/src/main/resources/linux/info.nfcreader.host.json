@@ -3,7 +3,5 @@
   "description": "NFC Reader Native Messaging Host",
   "path": "/usr/local/bin/nfc-reader-host",
   "type": "stdio",
-  "allowed_origins": [
-    "chrome-extension://EXTENSION_ID_PLACEHOLDER/"
-  ]
+  "allowed_origins": ["chrome-extension://ddobllicdfhebpoliholpjfiafmgijfh/"]
 }
