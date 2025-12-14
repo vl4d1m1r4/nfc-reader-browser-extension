@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support & Troubleshooting - NFC Reader</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="common.js"></script>
+</head>
+<body>
+
+    <!-- Main Content -->
+    <section class="content-section">
+        <h1>Support & Troubleshooting</h1>
+        
+        <div class="alert">
+            <i class="fa-solid fa-circle-info"></i> <strong>Note:</strong> This extension requires both the browser extension AND the companion app installed on your computer.
+        </div>
+
+        <h2>Common Issues</h2>
+
+        <h3>"Native host not found" or "Disconnected"</h3>
+        <p>This usually means the companion app is not installed or the browser cannot find it.</p>
+        <ul>
+            <li>Ensure you have downloaded and installed the companion app for your OS (Windows, macOS, or Linux).</li>
+            <li>Restart your browser completely after installation.</li>
+        </ul>
+
+        <h3>Reader Not Detected</h3>
+        <p>If the extension says "No reader found":</p>
+        <ul>
+            <li>Check if your USB reader (e.g., ACR122U) is properly plugged in.</li>
+            <li>Ensure the LED on the reader is on.</li>
+            <li>On Windows, ensure the "Smart Card" service is running.</li>
+        </ul>
+
+        <h2>macOS Specific Issues</h2>
+
+        <h3>"Missing binaries" or "App is damaged"</h3>
+        <p>If you see an error about missing binaries or the app being damaged/unidentified:</p>
+        <ul>
+            <li>This is often due to macOS security settings (Gatekeeper).</li>
+            <li>Go to <strong>System Settings > Privacy & Security</strong> and look for a message about "nfc-reader-host" being blocked. Click "Open Anyway".</li>
+            <li>If the binary is missing, try reinstalling the companion app. The binary should be located at <code>/Applications/nfc-reader-host.app/Contents/MacOS/nfc-reader-host</code>.</li>
+        </ul>
+
+        <h3>Browser doesn't see the host</h3>
+        <p>The installer places a manifest file in <code>/Library/Google/Chrome/NativeMessagingHosts/</code>. Ensure this file exists and points to the correct binary path.</p>
+
+        <h2>Linux Specific Issues</h2>
+
+        <h3>Permission Denied</h3>
+        <p>If the extension connects but cannot read cards, you might have a permission issue accessing the USB device.</p>
+        <ul>
+            <li>Ensure your user is part of the <code>plugdev</code> or <code>pcscd</code> group.</li>
+            <li>You may need to install <code>pcscd</code> and <code>libpcsclite1</code> packages.</li>
+            <li>Check if the <code>pcscd</code> service is running: <code>systemctl status pcscd</code>.</li>
+        </ul>
+
+        <h2>Advanced: Manual Configuration</h2>
+        <p>If you are still having trouble, you can check the "Native Messaging Manifest" files to ensure they point to the correct executable.</p>
+        
+        <ul>
+            <li><strong>Windows:</strong> Registry key or file at <code>C:\Program Files\NFC Reader Host\info.nfcreader.host.json</code></li>
+            <li><strong>macOS:</strong> <code>/Library/Google/Chrome/NativeMessagingHosts/info.nfcreader.host.json</code></li>
+            <li><strong>Linux:</strong> <code>/etc/opt/chrome/native-messaging-hosts/info.nfcreader.host.json</code></li>
+        </ul>
+        
+        <p>The <code>path</code> field in these JSON files must point to the actual executable location.</p>
+
+        <h2>Contact</h2>
+        <p>If you need further assistance, please email us at: <span id="contact-email"></span></p>
+        <script>
+            (function() {
+                var user = 'trajkovski.vladimir';
+                var domain = 'protonmail.com';
+                var element = document.getElementById('contact-email');
+                element.innerHTML = '<a href="mailto:' + user + '@' + domain + '">' + user + '@' + domain + '</a>';
+            })();
+        </script>
+
+    </section>
+
+</body>
+</html>

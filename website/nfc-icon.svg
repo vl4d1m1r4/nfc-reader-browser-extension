@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#14B8A6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0D9488;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- NFC waves -->
+  <g stroke="url(#grad)" stroke-width="8" fill="none" stroke-linecap="round">
+    <path d="M 45 64 Q 45 45, 64 45" opacity="0.6"/>
+    <path d="M 38 64 Q 38 35, 64 35" opacity="0.8"/>
+    <path d="M 31 64 Q 31 25, 64 25" opacity="1"/>
+  </g>
+  
+  <!-- NFC symbol center -->
+  <circle cx="64" cy="64" r="10" fill="url(#grad)"/>
+  
+  <!-- Right side waves -->
+  <g stroke="url(#grad)" stroke-width="8" fill="none" stroke-linecap="round">
+    <path d="M 83 64 Q 83 83, 64 83" opacity="0.6"/>
+    <path d="M 90 64 Q 90 93, 64 93" opacity="0.8"/>
+    <path d="M 97 64 Q 97 103, 64 103" opacity="1"/>
+  </g>
+</svg>

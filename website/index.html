@@ -4,223 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NFC Reader - Connect Smart Cards to Your Browser</title>
-    <style>
-        :root {
-            --primary-teal: #0d9488; /* Modern Teal */
-            --dark-teal: #0f766e;
-            --light-teal: #ccfbf1;
-            --text-main: #333;
-            --text-light: #666;
-            --white: #ffffff;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        }
-
-        body {
-            color: var(--text-main);
-            line-height: 1.6;
-            background-color: #f9fafb;
-        }
-
-        /* Navigation */
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1.5rem 5%;
-            background: var(--white);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary-teal);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: var(--text-main);
-            margin-left: 20px;
-            font-weight: 500;
-        }
-
-        .nav-links a:hover {
-            color: var(--primary-teal);
-        }
-
-        /* Hero Section */
-        .hero {
-            background: linear-gradient(135deg, var(--light-teal) 0%, #ffffff 100%);
-            padding: 4rem 5%;
-            text-align: center;
-            min-height: 80vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .hero h1 {
-            font-size: 3rem;
-            margin-bottom: 1.5rem;
-            color: #111;
-        }
-
-        .hero h1 span {
-            color: var(--primary-teal);
-        }
-
-        .hero p {
-            font-size: 1.25rem;
-            color: var(--text-light);
-            max-width: 700px;
-            margin-bottom: 2.5rem;
-        }
-
-        .cta-button {
-            background-color: var(--primary-teal);
-            color: var(--white);
-            padding: 1rem 2.5rem;
-            border-radius: 50px;
-            text-decoration: none;
-            font-size: 1.1rem;
-            font-weight: 600;
-            transition: transform 0.2s, background-color 0.2s;
-            box-shadow: 0 4px 14px rgba(13, 148, 136, 0.4);
-            display: inline-block;
-        }
-
-        .cta-button:hover {
-            background-color: var(--dark-teal);
-            transform: translateY(-2px);
-        }
-
-        .hero-subtext {
-            margin-top: 1rem;
-            font-size: 0.9rem;
-            color: var(--text-light);
-        }
-
-        /* Features Section */
-        .features {
-            padding: 5rem 5%;
-            background: var(--white);
-        }
-
-        .section-title {
-            text-align: center;
-            margin-bottom: 3rem;
-            font-size: 2rem;
-        }
-
-        .feature-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .feature-card {
-            background: #fdfdfd;
-            padding: 2rem;
-            border-radius: 12px;
-            border: 1px solid #eee;
-            text-align: center;
-            transition: transform 0.2s;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--primary-teal);
-        }
-
-        .icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            color: var(--primary-teal);
-        }
-
-        /* Download Section */
-        .download-section {
-            padding: 5rem 5%;
-            background-color: var(--text-main);
-            color: var(--white);
-            text-align: center;
-        }
-
-        .download-container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: rgba(255,255,255,0.1);
-            padding: 2rem;
-            border-radius: 15px;
-        }
-
-        .manual-downloads {
-            margin-top: 2rem;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 1rem;
-        }
-
-        .os-link {
-            color: #ccc;
-            text-decoration: none;
-            padding: 0.5rem 1rem;
-            border: 1px solid rgba(255,255,255,0.3);
-            border-radius: 8px;
-            font-size: 0.9rem;
-            transition: all 0.2s;
-        }
-
-        .os-link:hover {
-            background: rgba(255,255,255,0.2);
-            color: var(--white);
-            border-color: var(--white);
-        }
-
-        /* Footer */
-        footer {
-            padding: 2rem 5%;
-            text-align: center;
-            font-size: 0.9rem;
-            color: var(--text-light);
-            border-top: 1px solid #eee;
-        }
-
-        /* Mobile Responsive */
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 2rem; }
-            .nav-links { display: none; } /* Simplified for mobile */
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
     <!-- Using FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="common.js"></script>
 </head>
 <body>
-
-    <!-- Navigation -->
-    <nav>
-        <div class="logo">
-            <i class="fa-solid fa-id-card-clip"></i> NFC Bridge
-        </div>
-        <div class="nav-links">
-            <a href="#features">Features</a>
-            <a href="#download">Download</a>
-            <a href="#">Support</a>
-        </div>
-    </nav>
 
     <!-- Hero Section -->
     <section class="hero">
@@ -257,7 +46,7 @@
             <div class="feature-card">
                 <div class="icon"><i class="fa-solid fa-gear"></i></div>
                 <h3>Your Data, Your Format</h3>
-                <p>Need the ID with colons? Dashes? Or just raw numbers? Configure the output format easily: <code>AA:BB:CC</code>, <code>AA-BB-CC</code>, or <code>AABBCC</code>.</p>
+                <p>Need the ID with colons? Dashes? Or just raw numbers? Configure the output format easily:  <code>AA BB CC </code>, <code>AA:BB:CC</code>, <code>AA-BB-CC</code>, or <code>AABBCC</code>.</p>
             </div>
         </div>
     </section>
@@ -285,10 +74,6 @@
             </div>
         </div>
     </section>
-
-    <footer>
-        <p>&copy; 2025 NFC Reader Project. Open Source.</p>
-    </footer>
 
     <!-- Logic for Auto-Detection -->
     <script>
