@@ -1,18 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const path = window.location.pathname;
-  const isIndex =
-    path.endsWith("index.html") || path.endsWith("/") || path.endsWith("\\"); // Handle local file paths too roughly
-
-  // If we are on index.html, we use anchor links directly.
-  // If we are on other pages, we prepend index.html
-  // However, to be safe and simple, we can always use index.html#anchor if we don't mind a reload on index.
-  // But for smooth scrolling on index, we prefer just #anchor.
-
-  // Simple check: if the URL doesn't contain 'index.html' and isn't root, assume it's a sub-page
-  // But wait, local file system paths might be tricky.
-  // Let's just check if the document title contains "NFC Reader - Connect" (index title) vs others.
-  // Or just check if the element with id 'features' exists.
-
   const hasFeatures = document.getElementById("features") !== null;
   const prefix = hasFeatures ? "" : "index.html";
 
