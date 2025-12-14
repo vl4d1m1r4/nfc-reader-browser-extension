@@ -69,7 +69,7 @@
 
             <div class="manual-downloads">
                 <a href="#" id="link-win" class="os-link"><i class="fa-brands fa-windows"></i> Windows Installer (.msi)</a>
-                <a href="#" id="link-mac" class="os-link"><i class="fa-brands fa-apple"></i> macOS Installer (.dmg)</a>
+                <a href="#" id="link-mac" class="os-link" style="opacity: 0.5; cursor: not-allowed;"><i class="fa-brands fa-apple"></i> macOS Installer (.dmg) <span style="color: var(--primary-teal); font-size: 0.85em;">— Coming Soon</span></a>
                 <a href="#" id="link-linux" class="os-link"><i class="fa-brands fa-linux"></i> Unix/Linux (.deb)</a>
             </div>
         </div>
@@ -79,20 +79,19 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             
-            // --- CONFIGURATION: PASTE YOUR ACTUAL DOWNLOAD LINKS HERE ---
             const links = {
-                chrome: "https://chrome.google.com/webstore/detail/your-extension-id",
-                firefox: "https://addons.mozilla.org/en-US/firefox/addon/your-addon-id",
-                windows: "/downloads/nfc-bridge-setup.exe",
-                mac: "/downloads/nfc-bridge-installer.dmg",
-                linux: "/downloads/nfc-bridge-linux.tar.gz"
+                chrome: "https://chrome.google.com/webstore/detail/ddobllicdfhebpoliholpjfiafmgijfh",
+                firefox: "https://addons.mozilla.org/en-US/firefox/addon/nfc@nfcreader.info",
+                windows: "/downloads/nfc-reader-host-0.0.24.msi",
+                mac: "/downloads/nfc-reader-host-0.0.24.dmg",
+                linux: "/downloads/nfc-reader-host_0.0.24_amd64.deb"
             };
 
             // Assign links to manual buttons
             document.getElementById('link-chrome').href = links.chrome;
             document.getElementById('link-firefox').href = links.firefox;
             document.getElementById('link-win').href = links.windows;
-            document.getElementById('link-mac').href = links.mac;
+            document.getElementById('link-mac').addEventListener('click', (e) => e.preventDefault());
             document.getElementById('link-linux').href = links.linux;
 
             // Detection Variables
