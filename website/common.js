@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const navHtml = `
     <nav>
         <a href="index.html" class="logo">
-            <i class="fa-solid fa-id-card-clip"></i> NFC Bridge
+            <i class="fa-solid fa-id-card-clip"></i> NFC Reader
         </a>
         <div class="nav-links">
             <a href="${prefix}#features">Features</a>
